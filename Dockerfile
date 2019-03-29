@@ -28,14 +28,25 @@ FROM base AS dev
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN set -x && \
-    apk --no-cache add --virtual composerdeps && \
-    apk add \
+    # install composer
+    apk add --no-cache \
         git \
         unzip \
         && \
-    apk del composerdeps && \
     curl -LsS https://getcomposer.org/installer | php -- \
         --install-dir=/usr/local/bin \
-        --filename=composer
+        --filename=composer \
+        && \
+    # install xdebug
+    apk add --no-cache --virtual phpize-deps \
+        autoconf \
+        g++ \
+        make \
+        && \
+    pecl install xdebug && \
+    docker-php-ext-enable xdebug && \
+    # cleanup
+    apk del phpize-deps && \
+    rm -rf /tmp/pear
 
 ENV PATH /root/.composer/vendor/bin:$PATH
