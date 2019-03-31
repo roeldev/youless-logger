@@ -1,7 +1,8 @@
-YouLess energie monitor
+YouLess energy monitor
 =======================
 
-By default the YouLess energie monitor only stores data for about a year. This Docker image aims to provide the monitored data for a much longer time. In the future a (compatible) API should provide the same data as the YouLess device so any existing clients should work out of the box.
+By default the YouLess energy monitor only stores data for about a year. This Docker image aims to provide the 
+monitored data for a much longer time. In the future a (compatible) API should provide the same data as the YouLess device so any existing clients should work out of the box.
 
 ### Volumes
 | Path | Contains |
@@ -20,4 +21,4 @@ By default the YouLess energie monitor only stores data for about a year. This D
 - Github: https://github.com/project-casa/youless
 - Docker hub: https://hub.docker.com/r/roeldev/casa-youless
 - YouLess: https://youless.nl
-- Youless API info: http://wiki.td-er.nl/index.php?title=YouLess
+- YouLess API info: http://wiki.td-er.nl/index.php?title=YouLess
