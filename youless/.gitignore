@@ -1,4 +1,5 @@
-data/*/
-log/*/
+data/*
+log/*
 vendor/
 .env
+*.log
