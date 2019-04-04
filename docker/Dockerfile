@@ -4,21 +4,25 @@
 # ------------------------------------------------------------------------------
 FROM php:7.1-cli-alpine AS base
 
-COPY youless.sh /usr/bin/youless
+COPY docker/youless.sh /usr/bin/youless
 COPY youless/* /youless/
 
 RUN set -x && \
     apk --no-cache add --virtual deps && \
     apk add \
         sqlite \
+        supervisor \
         && \
     apk del deps && \
     chmod +x /usr/bin/youless
 
+COPY docker/supervisord.conf /etc/supervisord.conf
+COPY docker/docker-entrypoint.sh /
+
 WORKDIR /youless/
 
-COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]
 
 # ------------------------------------------------------------------------------
 # Production image
@@ -41,9 +45,9 @@ RUN set -x && \
         --no-dev \
         --no-progress \
         --no-suggest \
-        --optimize-autoloader \
         --no-interaction \
         && \
+    /tmp/composer dumpautoload -o && \
     # cleanup
     apk del composer-deps && \
     rm -rf \
@@ -52,7 +56,6 @@ RUN set -x && \
 
 ENV PATH /root/.composer/vendor/bin:$PATH
 VOLUME ["/youless/data/", "/youless/log/"]
-CMD ["php", "/youless/youless.php", "--start"]
 
 # ------------------------------------------------------------------------------
 # Development image
@@ -84,4 +87,3 @@ RUN set -x && \
 
 ENV PATH /root/.composer/vendor/bin:$PATH
 VOLUME ["/youless/", "/root/.composer/"]
-CMD ["php", "/youless/youless.php", "--start", "--dev"]

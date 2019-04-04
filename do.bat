@@ -1,5 +1,5 @@
 @echo off
-set DEFAULT_TARGET=dev
+set DEFAULT_TARGET=prod
 set IMAGE=roeldev/casa-youless
 set target=
 set container=casa-youless
@@ -25,7 +25,11 @@ goto top
 
 :build
 if "%target%" == "" goto init
+if "%target%" == "dev" echo Building DEVELOPMENT image
+if "%target%" == "prod" echo Building PRODUCTION image
+
 docker build ^
+    --file %~dp0docker\Dockerfile ^
     --force-rm ^
     --tag %IMAGE%:%version% ^
     --target %target% ^
@@ -37,10 +41,10 @@ if "%target%" == "" goto init
 
 set dir=%~dp0
 set volumes=
-if "%target%" == "dev" set volumes=-v "%dir%youless:/youless/" -v "%dir%.composer-cache:/root/.composer/"
-if "%target%" == "prod" set volumes=-v "%dir%youless\data:/youless/data/" -v "%dir%youless\log:/youless/log/"
+if "%target%" == "dev" set volumes=-v "%dir%\youless:/youless/" -v "%dir%.composer-cache:/root/.composer/"
+if "%target%" == "prod" set volumes=-v "%dir%\youless\data:/youless/data/" -v "%dir%\youless\log:/youless/log/"
 
-docker run --detach --name %container% %volumes% %IMAGE%:%version%
+docker run --name %container% %volumes% %IMAGE%:%version%
 goto:eof
 
 :stop
@@ -63,8 +67,8 @@ goto:eof
 
 :help
 echo Usage:
-echo   do [action] [target]
-echo   do [target] -- [command]
+echo   do action [target]
+echo   do [target] -- command
 echo.
 echo Actions:
 echo   build    Build Docker image
