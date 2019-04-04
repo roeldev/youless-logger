@@ -13,7 +13,8 @@ monitored data for a much longer time. In the future a (compatible) API should p
 ### Environment variables
 | Env. variable | Description |
 |---------------|-------------|
-|```YOULES_PASSWORD```| YouLess access password
+|```YOULESS_HOST```| YouLess' host, eg. http://youless
+|```YOULESS_PASSWORD```| YouLess access password
 |```DB_USERNAME```| Database username
 |```DB_PASSWORD```| Database password
 
