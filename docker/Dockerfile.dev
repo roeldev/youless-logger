@@ -1,0 +1,22 @@
+FROM roeldev/casa-youless:latest
+COPY docker/install-composer.sh /tmp/
+
+    # install composer
+RUN sh /tmp/install-composer.sh && \
+    # install xdebug dependencies
+    apk add --no-cache --virtual phpize-deps \
+        autoconf \
+        g++ \
+        make \
+        && \
+    # install xdebug
+    pecl install xdebug && \
+    docker-php-ext-enable xdebug && \
+    # cleanup
+    apk del phpize-deps && \
+    rm -rf \
+        /tmp/*
+
+ENV PATH /root/.composer/vendor/bin:$PATH
+
+VOLUME ["/youless/", "/root/.composer/"]

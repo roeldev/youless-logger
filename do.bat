@@ -1,68 +1,88 @@
 @echo off
-set DEFAULT_TARGET=prod
+set DEFAULT_TARGET=dev
 set IMAGE=roeldev/casa-youless
 set target=
 set container=casa-youless
 set version=latest
 
-:top
-if "%1" == "build" goto build
-if "%1" == "start" goto start
-if "%1" == "stop" goto stop
-if "%1" == "restart" goto stop
-if "%1" == "login" goto login
-if "%1" == "--" goto exec
+if "%1" == "build" ( goto build )
+if "%1" == "start" ( goto start )
+if "%1" == "stop" ( goto stop )
+if "%1" == "restart" ( goto stop )
+if "%1" == "login" ( goto login )
+if "%1" == "--" ( goto exec )
+if "%2" == "--" ( goto exec )
 goto help
 
 :init
 set target=%DEFAULT_TARGET%
-if "%2" == "dev" set target=dev
-if "%2" == "prod" set target=prod
+if "%1" == "dev" ( set target=dev )
+if "%1" == "prod" ( set target=prod )
 
-if "%target%" == "dev" set container=%container%-dev
-if "%target%" == "dev" set version=%version%-dev
-goto top
+if "%target%" == "dev" (
+    set container=%container%-dev
+) else (
+    set version=%version%-dev
+)
+goto:eof
 
 :build
-if "%target%" == "" goto init
-if "%target%" == "dev" echo Building DEVELOPMENT image
-if "%target%" == "prod" echo Building PRODUCTION image
-
+call :init %2
+set dockerfile=Dockerfile
+if "%target%" == "dev" (
+    echo Building DEVELOPMENT image
+    set dockerfile=Dockerfile.dev
+) else (
+    echo Building PRODUCTION image
+)
 docker build ^
-    --file %~dp0docker\Dockerfile ^
+    --file %~dp0docker\%dockerfile% ^
     --force-rm ^
     --tag %IMAGE%:%version% ^
-    --target %target% ^
     .
 goto:eof
 
 :start
-if "%target%" == "" goto init
-
+call :init %2
 set dir=%~dp0
 set volumes=
-if "%target%" == "dev" set volumes=-v "%dir%\youless:/youless/" -v "%dir%.composer-cache:/root/.composer/"
-if "%target%" == "prod" set volumes=-v "%dir%\youless\data:/youless/data/" -v "%dir%\youless\log:/youless/log/"
-
-docker run --name %container% %volumes% %IMAGE%:%version%
+if "%target%" == "dev" (
+    set volumes=-v "%dir%\youless:/youless/" ^
+                -v "%dir%.composer-cache:/root/.composer/"
+) else (
+    set volumes=-v "%dir%\youless\data:/youless/data/" ^
+                -v "%dir%\youless\log:/youless/log/"
+)
+docker run ^
+    --detach ^
+    --name %container% ^
+    %volumes% ^
+    %IMAGE%:%version%
 goto:eof
 
 :stop
-if "%target%" == "" goto init
+call :init %2
 docker stop %container%
 docker rm %container%
-if "%1" == "restart" goto start
+if "%1" == "restart" ( goto start )
 goto:eof
 
 :login
-if "%target%" == "" goto init
+call :init %2
 docker exec -it %container% sh
 goto:eof
 
 :exec
-set ARGS=%*
-set ARGS=%ARGS:~3%
-echo docker exec -it %container% %ARGS%
+call :init %1
+set args=%*
+if not "%2" == "--" (
+    set args=%args:~3%
+) else (
+    if "%target%" == "dev" ( set args=%args:~7% )
+    if "%target%" == "prod" ( set args=%args:~8% )
+)
+
+echo docker exec -it %container% %args%
 goto:eof
 
 :help
@@ -75,6 +95,7 @@ echo   build    Build Docker image
 echo   start    Start Docker container
 echo   stop     Stop Docker container
 echo   restart  Restart Docker container
+echo   login    Log in to running Docker container
 echo   --       Execute the command in the Docker container
 echo.
 echo Target:
