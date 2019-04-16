@@ -62,8 +62,7 @@ if "%target%" == "dev" (
     )
 
     set volumes=-v "%dir%\youless:/youless/" ^
-                -v "%dirCache%:/root/.composer/" ^
-                -v "S:\playground\docker\stellar-master:/stellar/"
+                -v "%dirCache%:/root/.composer/"
 ) else (
     set volumes=-v "%dir%\youless\data:/youless/data/" ^
                 -v "%dir%\youless\log:/youless/log/"
