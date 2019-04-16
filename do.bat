@@ -15,26 +15,35 @@ if "%2" == "--" ( goto exec )
 goto help
 
 :init
+if not "%target%" == "" goto:eof
+
 set target=%DEFAULT_TARGET%
-if "%1" == "dev" ( set target=dev )
-if "%1" == "prod" ( set target=prod )
+if "%1" == "dev" (
+    set target=%1
+)
+if "%1" == "prod" (
+    set target=%1
+)
 
 if "%target%" == "dev" (
     set container=%container%-dev
-) else (
     set version=%version%-dev
 )
 goto:eof
 
 :build
 call :init %2
-set dockerfile=Dockerfile
+
 if "%target%" == "dev" (
-    echo Building DEVELOPMENT image
+    set type=DEVELOPMENT
     set dockerfile=Dockerfile.dev
 ) else (
-    echo Building PRODUCTION image
+    set type=PRODUCTION
+    set dockerfile=Dockerfile
 )
+
+echo Building %type% image from `%dockerfile%` as `%IMAGE%:%version%`
+
 docker build ^
     --file %~dp0docker\%dockerfile% ^
     --force-rm ^
@@ -45,14 +54,23 @@ goto:eof
 :start
 call :init %2
 set dir=%~dp0
-set volumes=
+
 if "%target%" == "dev" (
+    set dirCache=%dir%.composer-cache
+    if not exist "%dirCache%\" (
+        mkdir %dirCache%
+    )
+
     set volumes=-v "%dir%\youless:/youless/" ^
-                -v "%dir%.composer-cache:/root/.composer/"
+                -v "%dirCache%:/root/.composer/" ^
+                -v "S:\playground\docker\stellar-master:/stellar/"
 ) else (
     set volumes=-v "%dir%\youless\data:/youless/data/" ^
                 -v "%dir%\youless\log:/youless/log/"
 )
+
+echo Starting `%container%` from image `%IMAGE%:%version%`...
+
 docker run ^
     --detach ^
     --name %container% ^
@@ -69,20 +87,28 @@ goto:eof
 
 :login
 call :init %2
+echo Logging in to `%container%`...
+echo.
+
 docker exec -it %container% sh
 goto:eof
 
 :exec
 call :init %1
+
 set args=%*
 if not "%2" == "--" (
     set args=%args:~3%
 ) else (
-    if "%target%" == "dev" ( set args=%args:~7% )
-    if "%target%" == "prod" ( set args=%args:~8% )
+    if "%target%" == "dev" (
+        set args=%args:~7%
+    )
+    if "%target%" == "prod" (
+        set args=%args:~8%
+    )
 )
 
-echo docker exec -it %container% %args%
+docker exec -it %container% %args%
 goto:eof
 
 :help
