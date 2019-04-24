@@ -1,8 +1,12 @@
 FROM roeldev/casa-youless:latest
-COPY docker/install-composer.sh /tmp/
+ENV COMPOSER_ALLOW_SUPERUSER 1
 
+COPY docker/install-composer.sh /tmp/
+COPY docker/docker-entrypoint.sh /
+
+RUN set -x && \
     # install composer
-RUN sh /tmp/install-composer.sh && \
+    sh /tmp/install-composer.sh && \
     # install xdebug dependencies
     apk add --no-cache --virtual phpize-deps \
         autoconf \
@@ -14,9 +18,10 @@ RUN sh /tmp/install-composer.sh && \
     docker-php-ext-enable xdebug && \
     # cleanup
     apk del phpize-deps && \
-    rm -rf \
-        /tmp/*
+    rm -rf /tmp/*
 
 ENV PATH /root/.composer/vendor/bin:$PATH
-
 VOLUME ["/youless/", "/root/.composer/"]
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]

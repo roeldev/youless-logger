@@ -5,13 +5,13 @@ set target=
 set container=casa-youless
 set version=latest
 
-if "%1" == "build" ( goto build )
-if "%1" == "start" ( goto start )
-if "%1" == "stop" ( goto stop )
-if "%1" == "restart" ( goto stop )
-if "%1" == "login" ( goto login )
-if "%1" == "--" ( goto exec )
-if "%2" == "--" ( goto exec )
+if "%1" == "build" goto build
+if "%1" == "start" goto start
+if "%1" == "stop" goto stop
+if "%1" == "restart" goto stop
+if "%1" == "login" goto login
+if "%1" == "--" goto exec
+if "%2" == "--" goto exec
 goto help
 
 :init
@@ -46,7 +46,6 @@ echo Building %type% image from `%dockerfile%` as `%IMAGE%:%version%`
 
 docker build ^
     --file %~dp0docker\%dockerfile% ^
-    --force-rm ^
     --tag %IMAGE%:%version% ^
     .
 goto:eof
@@ -71,7 +70,6 @@ if "%target%" == "dev" (
 echo Starting `%container%` from image `%IMAGE%:%version%`...
 
 docker run ^
-    --detach ^
     --name %container% ^
     %volumes% ^
     %IMAGE%:%version%
