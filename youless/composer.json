@@ -1,11 +1,12 @@
 {
     "require": {
-        "symfony/console": "^4.2"
+        "symfony/console": "^4.2",
+        "stellar/stellar": "dev-master"
     },
-
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "YouLess\\": "app/"
+            "Casa\\YouLess\\": "app/"
         }
     }
 }

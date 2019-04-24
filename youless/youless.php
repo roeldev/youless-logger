@@ -10,6 +10,6 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
 
-$application = new Application();
-$application->add(new YouLess\FetchCommand());
-$application->run();
+$app = new Application();
+$app->add(new Casa\YouLess\Commands\FetchCommand());
+$app->run();

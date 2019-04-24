@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace YouLess;
+namespace Casa\YouLess\Commands;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
