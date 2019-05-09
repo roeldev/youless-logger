@@ -1,0 +1,25 @@
+#!/bin/bash
+
+cwd=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+LABEL_BUILD_DATE=$( date -u +"%Y-%m-%dT%H:%M:%SZ" )
+LABEL_VCS_REF=$( git rev-parse --short HEAD )
+DOCKERFILE_PATH="$( dirname ${cwd} )/Dockerfile"
+
+echo "docker build \
+    --build-arg DOCKER_REPO=${DOCKER_REPO} \
+    --build-arg DOCKER_TAG=${DOCKER_TAG} \
+    --build-arg LABEL_BUILD_DATE=${LABEL_BUILD_DATE} \
+    --build-arg LABEL_VCS_REF=${LABEL_VCS_REF} \
+    --file ${DOCKERFILE_PATH} \
+    --tag ${IMAGE_NAME} \
+    "$( dirname "$( dirname "${cwd}" )" )""
+
+docker build \
+    --build-arg DOCKER_REPO=${DOCKER_REPO} \
+    --build-arg DOCKER_TAG=${DOCKER_TAG} \
+    --build-arg LABEL_BUILD_DATE=${LABEL_BUILD_DATE} \
+    --build-arg LABEL_VCS_REF=${LABEL_VCS_REF} \
+    --file ${DOCKERFILE_PATH} \
+    --tag ${IMAGE_NAME} \
+    "$( dirname "$( dirname "${cwd}" )" )"

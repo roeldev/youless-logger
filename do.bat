@@ -1,8 +1,8 @@
 @echo off
 set DEFAULT_TARGET=dev
-set IMAGE=roeldev/casa-youless
+set IMAGE=roeldev/casa-youless-logger
 set target=
-set container=casa-youless
+set container=casa-youless-logger
 set version=latest
 
 if "%1" == "build" goto build
