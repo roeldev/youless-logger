@@ -1,8 +1,8 @@
-FROM roeldev/casa-youless:latest
-ENV COMPOSER_ALLOW_SUPERUSER 1
+ARG PRODUCTION_IMAGE=roeldev/casa-youless-logger:latest
+FROM ${PRODUCTION_IMAGE}
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
-COPY docker/install-composer.sh /tmp/
-COPY docker/docker-entrypoint.sh /
+COPY docker/php/install-composer.sh /tmp/
 
 RUN set -x && \
     # install composer
@@ -20,8 +20,9 @@ RUN set -x && \
     apk del phpize-deps && \
     rm -rf /tmp/*
 
-ENV PATH /root/.composer/vendor/bin:$PATH
+ENV PATH=/root/.composer/vendor/bin:$PATH
 VOLUME ["/youless/", "/root/.composer/"]
 
+COPY docker/docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]

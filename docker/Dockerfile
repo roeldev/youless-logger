@@ -1,8 +1,8 @@
 # https://hub.docker.com/_/php
 FROM php:7.1-cli-alpine as builder
-ENV COMPOSER_ALLOW_SUPERUSER 1
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
-COPY docker/install-composer.sh /tmp/
+COPY docker/php/install-composer.sh /tmp/
 COPY youless/ /youless/
 WORKDIR /youless/
 
@@ -29,8 +29,10 @@ RUN set -x && \
         sqlite \
         supervisor
 
-COPY --from=builder /youless/ /youless/
 COPY docker/supervisord.conf /etc/supervisord.conf
+COPY docker/php/php.ini /usr/local/etc/php/php.ini
+COPY docker/php/conf.d/*.ini /usr/local/etc/php/conf.d/
+COPY --from=builder /youless/ /youless/
 
 WORKDIR /youless/
 VOLUME ["/youless/data/", "/youless/log/"]

@@ -71,6 +71,7 @@ echo Starting `%container%` from image `%IMAGE%:%version%`...
 
 docker run ^
     --name %container% ^
+    --env-file "%dir%\.docker.env" ^
     %volumes% ^
     %IMAGE%:%version%
 goto:eof
