@@ -4,7 +4,7 @@ Logger service for YouLess energy monitor
 [![Latest release][latest-release-img]][latest-release-url]
 [![Build status][build-status-img]][build-status-url]
 [![Layers][image-layers-img]][image-layers-url]
-![Image size][image-size-img]
+[![Image size][image-size-img]][image-size-url]
 
 [latest-release-img]: https://img.shields.io/github/release/project-casa/youless-logger.svg?label=latest
 [latest-release-url]: https://github.com/project-casa/youless-logger/releases
@@ -13,6 +13,7 @@ Logger service for YouLess energy monitor
 [image-layers-img]: https://img.shields.io/microbadger/layers/roeldev/casa-youless-logger/latest.svg
 [image-layers-url]: https://microbadger.com/images/roeldev/casa-youless-logger
 [image-size-img]: https://img.shields.io/microbadger/image-size/roeldev/casa-youless-logger/latest.svg
+[image-size-url]: https://hub.docker.com/r/roeldev/casa-youless-logger/tags
 
 
 By default a YouLess energy monitor only stores data for about a year. This Docker image aims to store the monitored data for a much longer time. In the future an API compatible with YouLess' own API will provide the same data so any existing clients should work pretty much out of the box.
