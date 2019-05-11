@@ -34,7 +34,9 @@ LABEL maintainer="Roel Schut" \
       org.label-schema.vcs-url="https://github.com/project-casa/youless-logger" \
       org.label-schema.schema-version="1.0"
 
-COPY docker/versions /etc/profile.d/
+ENV ENV="/etc/motd"
+COPY docker/motd /etc/motd.d/
+COPY docker/motd.sh /etc/motd
 COPY docker/youless.sh /usr/bin/youless
 
 RUN set -x && \
