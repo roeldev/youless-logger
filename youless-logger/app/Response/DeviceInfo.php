@@ -2,6 +2,7 @@
 
 namespace Casa\YouLess\Response;
 
+use Casa\YouLess\Device;
 use Stellar\Curl\Response\JsonResponse;
 
 class DeviceInfo extends JsonResponse
@@ -12,6 +13,6 @@ class DeviceInfo extends JsonResponse
     {
         parent::__construct($requestResource, $usedOptions, $response);
 
-        $this->_data['ip'] = str_replace('http://', '', \gethostbyname(\getenv('YOULESS_HOST')));
+        $this->_data['ip'] = Device::getIp();
     }
 }

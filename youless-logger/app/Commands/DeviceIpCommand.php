@@ -2,22 +2,22 @@
 
 namespace Casa\YouLess\Commands;
 
-use Casa\YouLess\Request\Request;
+use Casa\YouLess\Device;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DeviceMacCommand extends Command
+class DeviceIpCommand extends Command
 {
-    protected static $defaultName = 'device:mac';
+    protected static $defaultName = 'device:ip';
 
     protected function configure()
     {
-        $this->setDescription('Display mac address of YouLess device');
+        $this->setDescription('Display IP address of YouLess device');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln(Request::deviceInfo()->response()->mac);
+        $output->writeln(Device::getIp());
     }
 }
