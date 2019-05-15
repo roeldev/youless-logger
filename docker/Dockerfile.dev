@@ -21,7 +21,7 @@ RUN set -x && \
     rm -rf /tmp/*
 
 ENV PATH=/root/.composer/vendor/bin:$PATH
-VOLUME ["/youless/", "/root/.composer/"]
+VOLUME ["/youless-logger/", "/root/.composer/"]
 
 COPY docker/docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]

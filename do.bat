@@ -60,11 +60,12 @@ if "%target%" == "dev" (
         mkdir %dirCache%
     )
 
-    set volumes=-v "%dir%\youless:/youless/" ^
-                -v "%dirCache%:/root/.composer/"
+    set volumes=-v "%dir%\youless-logger:/youless-logger/" ^
+                -v "%dirCache%:/root/.composer/" ^
+                -v "%dir%\..\..\stellar-php\stellar\:/youless-logger/vendor/stellar/stellar"
 ) else (
-    set volumes=-v "%dir%\youless\data:/youless/data/" ^
-                -v "%dir%\youless\log:/youless/log/"
+    set volumes=-v "%dir%\youless-logger\data:/youless-logger/data/" ^
+                -v "%dir%\youless-logger\log:/youless-logger/log/"
 )
 
 echo Starting `%container%` from image `%IMAGE%:%version%`...

@@ -1,4 +1,4 @@
 #!/bin/sh
 set -e
 
-php /youless/app.php $*
+php /youless-logger/app.php $*

@@ -3,8 +3,8 @@ FROM php:7.1-cli-alpine as builder
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 COPY docker/php/install-composer.sh /tmp/
-COPY youless/ /youless/
-WORKDIR /youless/
+COPY youless-logger/ /youless-logger/
+WORKDIR /youless-logger/
 
 RUN set -x && \
     # install composer
@@ -48,9 +48,9 @@ RUN set -x && \
 COPY docker/supervisord.conf /etc/supervisord.conf
 COPY docker/php/php.ini /usr/local/etc/php/php.ini
 COPY docker/php/conf.d/*.ini /usr/local/etc/php/conf.d/
-COPY --from=builder /youless/ /youless/
+COPY --from=builder /youless-logger/ /youless-logger/
 
-WORKDIR /youless/
-VOLUME ["/youless/data/", "/youless/log/"]
+WORKDIR /youless-logger/
+VOLUME ["/youless-logger/data/", "/youless-logger/log/"]
 
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]

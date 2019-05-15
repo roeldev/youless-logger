@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-if [[ ! -f /youless/vendor/autoload.php ]]
+if [[ ! -f /youless-logger/vendor/autoload.php ]]
 then
     echo Installing composer packages, please wait...
     composer install \
