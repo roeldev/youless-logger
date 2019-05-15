@@ -37,10 +37,10 @@ LABEL maintainer="Roel Schut" \
 ENV ENV="/etc/motd"
 COPY docker/motd /etc/motd.d/
 COPY docker/motd.sh /etc/motd
-COPY docker/youless.sh /usr/bin/youless
+COPY docker/yl.sh /usr/bin/yl
 
 RUN set -x && \
-    chmod +x /usr/bin/youless && \
+    chmod +x /usr/bin/yl && \
     apk add --no-cache \
         sqlite \
         supervisor
