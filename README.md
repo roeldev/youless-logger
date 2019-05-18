@@ -22,14 +22,14 @@ By default a YouLess energy monitor only stores data for about a year. This Dock
 ### Volumes
 | Path | Contains |
 |------|----------|
-|```/youless/data```| Stored data
-|```/youless/log```| Log files
+|```/youless-logger/data```| Stored data
+|```/youless-logger/log```| Log files
 
 ### Environment variables
 | Env. variable | Description |
 |---------------|-------------|
-|```YOULESS_HOST```| YouLess' host, eg. http://youless
-|```YOULESS_PASSWORD```| YouLess access password
+|```YOULESS_HOST```| YouLess' hostname, eg. http://youless / http://192.168.1.23
+|```YOULESS_PASSWORD```| Password to access YouLess' web interface
 |```DB_USERNAME```| Database username
 |```DB_PASSWORD```| Database password
 
