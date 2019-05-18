@@ -1,119 +1,83 @@
 @echo off
 set DEFAULT_TARGET=dev
-set IMAGE=roeldev/casa-youless-logger
 set target=
-set container=casa-youless-logger
-set version=latest
+set action=%1
 
-if "%1" == "build" goto build
-if "%1" == "start" goto start
-if "%1" == "stop" goto stop
-if "%1" == "restart" goto stop
-if "%1" == "login" goto login
-if "%1" == "--" goto exec
-if "%2" == "--" goto exec
-goto help
-
-:init
-if not "%target%" == "" goto:eof
-
-set target=%DEFAULT_TARGET%
 if "%1" == "dev" (
     set target=%1
+    set action=%2
+)
+if "%2" == "dev" (
+    set target=%2
 )
 if "%1" == "prod" (
     set target=%1
+    set action=%2
+)
+if "%2" == "prod" (
+    set target=%2
 )
 
-if "%target%" == "dev" (
-    set container=%container%-dev
-    set version=%version%-dev
-)
-goto:eof
+if "%action%" == "build" goto build
+if "%action%" == "start" goto start
+if "%action%" == "stop" goto stop
+if "%action%" == "restart" goto stop
+if "%action%" == "login" goto login
+if "%action%" == "--" goto exec
+goto help
+
 
 :build
-call :init %2
-
-if "%target%" == "dev" (
-    set type=DEVELOPMENT
-    set dockerfile=Dockerfile.dev
-) else (
-    set type=PRODUCTION
-    set dockerfile=Dockerfile
-)
-
-echo Building %type% image from `%dockerfile%` as `%IMAGE%:%version%`
-
-docker build ^
-    --file %~dp0docker\%dockerfile% ^
-    --tag %IMAGE%:%version% ^
-    .
+docker-compose build %target%
 goto:eof
+
 
 :start
-call :init %2
-set dir=%~dp0
-
-if "%target%" == "dev" (
-    set dirCache=%dir%.composer-cache
-    if not exist "%dirCache%\" (
-        mkdir %dirCache%
-    )
-
-    set volumes=-v "%dir%\youless-logger:/youless-logger/" ^
-                -v "%dirCache%:/root/.composer/" ^
-                -v "%dir%\..\..\stellar-php\stellar\:/youless-logger/vendor/stellar/stellar"
-) else (
-    set volumes=-v "%dir%\youless-logger\data:/youless-logger/data/" ^
-                -v "%dir%\youless-logger\log:/youless-logger/log/"
-)
-
-echo Starting `%container%` from image `%IMAGE%:%version%`...
-
-docker run ^
-    --name %container% ^
-    --env-file "%dir%\.docker.env" ^
-    %volumes% ^
-    %IMAGE%:%version%
+docker-compose up -d %target%
 goto:eof
+
 
 :stop
-call :init %2
-docker stop %container%
-docker rm %container%
-if "%1" == "restart" ( goto start )
+docker-compose down %target%
+if "%1" == "restart" goto start
 goto:eof
+
 
 :login
-call :init %2
-echo Logging in to `%container%`...
-echo.
-
-docker exec -it %container% sh
-goto:eof
-
-:exec
-call :init %1
-
-set args=%*
-if not "%2" == "--" (
-    set args=%args:~3%
-) else (
-    if "%target%" == "dev" (
-        set args=%args:~7%
-    )
-    if "%target%" == "prod" (
-        set args=%args:~8%
-    )
+if "%target%" == "" (
+    set target=%DEFAULT_TARGET%
 )
 
-docker exec -it %container% %args%
+docker exec -it casa-youless-logger_%target% sh
 goto:eof
+
+
+:exec
+set args=%*
+set args=%args:~3%
+
+if "%1" == "dev" (
+    set args=%args:~4%
+)
+if "%1" == "prod" (
+    set args=%args:~5%
+)
+if "%target%" == "" (
+    set target=%DEFAULT_TARGET%
+)
+
+docker exec -it casa-youless-logger_%target% %ARGS%
+goto:eof
+
 
 :help
 echo Usage:
-echo   do action [target]
-echo   do [target] -- command
+echo   do [TARGET] ACTION
+echo   do [TARGET] -- COMMAND
+echo.
+echo Targets:
+echo   prod     Local production image
+echo   dev      Local development image, default target
 echo.
 echo Actions:
 echo   build    Build Docker image
@@ -122,8 +86,4 @@ echo   stop     Stop Docker container
 echo   restart  Restart Docker container
 echo   login    Log in to running Docker container
 echo   --       Execute the command in the Docker container
-echo.
-echo Target:
-echo   prod     Production container
-echo   dev      Development container, default target
 echo.
