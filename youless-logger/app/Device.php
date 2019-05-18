@@ -6,8 +6,23 @@ use Stellar\Common\StaticClass;
 
 class Device extends StaticClass
 {
-    public static function getIp() : string
+    public static function getHost() : ?string
     {
-        return str_replace('http://', '', \gethostbyname(\getenv('YOULESS_HOST')));
+        $host = \getenv('YOULESS_HOST');
+        if (!$host || !\is_string($host)) {
+            return null;
+        }
+
+        return rtrim($host, '/');
+    }
+
+    public static function getIp() : ?string
+    {
+        $host = self::getHost();
+        if (!$host) {
+            return null;
+        }
+
+        return str_replace('http://', '', \gethostbyname($host));
     }
 }

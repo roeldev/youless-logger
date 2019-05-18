@@ -2,6 +2,7 @@
 
 namespace Casa\YouLess\Request;
 
+use Casa\YouLess\Device;
 use Casa\YouLess\Exceptions\EmptyEnv;
 use Casa\YouLess\Response\DeviceInfo;
 use Stellar\Common\StaticClass;
@@ -12,7 +13,7 @@ class Request extends StaticClass
 {
     public static function deviceInfo() : CurlRequest
     {
-        $host = \getenv('YOULESS_HOST');
+        $host = Device::getHost();
         if (!$host) {
             throw EmptyEnv::factory('YOULESS_HOST')->create();
         }
