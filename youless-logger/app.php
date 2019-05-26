@@ -8,11 +8,11 @@ if (!file_exists($autoloader)) {
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-use Casa\YouLess\Commands\DeviceCommand;
-use Casa\YouLess\Commands\DeviceIpCommand;
-use Casa\YouLess\Commands\DeviceMacCommand;
-use Casa\YouLess\Commands\DeviceModelCommand;
-use Casa\YouLess\Commands\UpdateCommand;
+use Casa\YouLess\Commands\Device\DeviceCommand;
+use Casa\YouLess\Commands\Device\DeviceIpCommand;
+use Casa\YouLess\Commands\Device\DeviceMacCommand;
+use Casa\YouLess\Commands\Device\DeviceModelCommand;
+use Casa\YouLess\Commands\Update\UpdateCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Dotenv\Dotenv;
 

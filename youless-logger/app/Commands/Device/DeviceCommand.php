@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess\Commands;
+namespace Casa\YouLess\Commands\Device;
 
 use Casa\YouLess\Request\Request;
 use Symfony\Component\Console\Command\Command;
