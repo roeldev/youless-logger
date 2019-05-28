@@ -31,14 +31,14 @@ class Request extends StaticClass
             ->withResponseAs(DeviceInfo::class);
     }
 
-    public static function updatePower() : CurlRequest
+    public static function updatePower($mode, $i) : CurlRequest
     {
         // h = per minute of day
         // w = per 10 mins.
         // d = per hour
         // m = per day
         return self::_createCurlRequest('/V')
-            ->withQueryParam('h', '1')
+            ->withQueryParam((string) $mode, (string) $i)
             ->withResponseAs(UsageData::class);
     }
 }
