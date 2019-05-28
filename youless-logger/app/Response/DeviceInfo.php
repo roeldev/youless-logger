@@ -13,6 +13,6 @@ class DeviceInfo extends JsonResponse
     {
         parent::__construct($requestResource, $usedOptions, $response);
 
-        $this->_data['ip'] = Device::getIp();
+        $this->_data['ip'] = Device::instance()->getIp();
     }
 }

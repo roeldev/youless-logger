@@ -15,7 +15,7 @@ class Request extends StaticClass
 {
     protected function _createCurlRequest(string $uri) : CurlRequest
     {
-        $host = Device::getHost();
+        $host = Device::instance()->getHost();
         if (!$host) {
             throw EmptyEnv::factory('YOULESS_HOST')->create();
         }

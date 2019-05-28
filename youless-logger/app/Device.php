@@ -2,27 +2,36 @@
 
 namespace Casa\YouLess;
 
-use Stellar\Common\StaticClass;
+use Stellar\Common\Contracts\SingletonInterface;
+use Stellar\Container\Registry;
 
-class Device extends StaticClass
+final class Device implements SingletonInterface
 {
-    public static function getHost() : ?string
+    /**
+     * @return static
+     */
+    public static function instance()
+    {
+        return Registry::singleton(static::class);
+    }
+
+    public function getHost() : ?string
     {
         $host = \getenv('YOULESS_HOST');
         if (!$host || !\is_string($host)) {
             return null;
         }
 
-        return rtrim($host, '/');
+        return \rtrim($host, '/');
     }
 
-    public static function getIp() : ?string
+    public function getIp() : ?string
     {
-        $host = self::getHost();
+        $host = $this->getHost();
         if (!$host) {
             return null;
         }
 
-        return str_replace('http://', '', \gethostbyname($host));
+        return \str_replace('http://', '', \gethostbyname($host));
     }
 }

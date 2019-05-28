@@ -18,6 +18,6 @@ class DeviceIpCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln(Device::getIp());
+        $output->writeln(Device::instance()->getIp());
     }
 }
