@@ -1,0 +1,7 @@
+CREATE TABLE data(
+   date INT NOT NULL,
+   delta CHAR(5) NOT NULL,
+   unit VARCHAR(4) NOT NULL,
+   value INT NOT NULL,
+   PRIMARY KEY(date, delta)
+);
