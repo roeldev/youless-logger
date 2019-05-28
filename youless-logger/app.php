@@ -7,11 +7,4 @@ if (!file_exists($autoloader)) {
 }
 
 require_once __DIR__ . '/vendor/autoload.php';
-
-use Casa\YouLess\App;
-use Symfony\Component\Dotenv\Dotenv;
-
-$dotenv = new Dotenv();
-$dotenv->load(__DIR__ . '/.env');
-
-App::instance()->run();
+Casa\YouLess\App::instance()->run();
