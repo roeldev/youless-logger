@@ -38,7 +38,7 @@ goto:eof
 
 
 :stop
-docker-compose down %target%
+docker-compose down
 if "%1" == "restart" goto start
 goto:eof
 
