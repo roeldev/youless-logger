@@ -3,4 +3,3 @@ config/*.conf
 data/**/*.db
 vendor/
 .env
-**/*.log

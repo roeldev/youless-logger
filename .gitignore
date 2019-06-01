@@ -1,3 +1,4 @@
 .composer-cache/
 .idea/
 .docker.env
+**/*.log
