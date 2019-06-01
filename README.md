@@ -5,6 +5,7 @@ Logger service for YouLess energy monitor
 [![Build status][build-status-img]][build-status-url]
 [![Layers][image-layers-img]][image-layers-url]
 [![Image size][image-size-img]][image-size-url]
+[![Code maintainability][maintainability-img]][maintainability-url]
 
 [latest-release-img]: https://img.shields.io/github/release/project-casa/youless-logger.svg?label=latest
 [latest-release-url]: https://github.com/project-casa/youless-logger/releases
@@ -14,6 +15,8 @@ Logger service for YouLess energy monitor
 [image-layers-url]: https://microbadger.com/images/roeldev/casa-youless-logger
 [image-size-img]: https://img.shields.io/microbadger/image-size/roeldev/casa-youless-logger/latest.svg
 [image-size-url]: https://hub.docker.com/r/roeldev/casa-youless-logger/tags
+[maintainability-img]: https://img.shields.io/codeclimate/maintainability-percentage/project-casa/youless-logger.svg
+[maintainability-url]: https://codeclimate.com/github/project-casa/youless-logger
 
 
 By default a YouLess energy monitor only stores data for about a year. This Docker image aims to store the monitored data for a much longer time. In the future an API compatible with YouLess' own API will provide the same data so any existing clients should work pretty much out of the box.
@@ -22,16 +25,16 @@ By default a YouLess energy monitor only stores data for about a year. This Dock
 ### Volumes
 | Path | Contains |
 |------|----------|
-|```/youless-logger/data```| Stored data
+|```/youless-logger/config```| Config files
+|```/youless-logger/data```| Stored data(base) files
 |```/youless-logger/log```| Log files
+
 
 ### Environment variables
 | Env. variable | Description |
 |---------------|-------------|
 |```YOULESS_HOST```| YouLess' hostname, eg. http://youless / http://192.168.1.23
 |```YOULESS_PASSWORD```| Password to access YouLess' web interface
-|```DB_USERNAME```| Database username
-|```DB_PASSWORD```| Database password
 
 
 ## Links
