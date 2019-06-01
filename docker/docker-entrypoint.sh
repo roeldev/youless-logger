@@ -3,7 +3,7 @@ set -e
 
 if [[ ! -d /youless-logger/config/supervisord ]]
 then
-    cp -avr /youless-logger/resources/supervisord-defaults /youless-logger/config/supervisord
+    cp -avr /youless-logger/resources/supervisord-defaults/* /youless-logger/config/
 fi
 
 if [[ ! -f /youless-logger/vendor/autoload.php ]]
