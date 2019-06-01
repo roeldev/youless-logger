@@ -10,6 +10,7 @@ services:
     env_file:
       - .docker.env
     volumes:
+      - ./youless-logger/config:/youless-logger/config/
       - ./youless-logger/data:/youless-logger/data/
       - ./youless-logger/log:/youless-logger/log/
 
@@ -25,5 +26,8 @@ services:
       - .docker.env
     volumes:
       - ./youless-logger:/youless-logger/
+      - ./youless-logger/config:/youless-logger/config/
+      - ./youless-logger/data:/youless-logger/data/
+      - ./youless-logger/log:/youless-logger/log/
       - ./.composer-cache:/root/.composer/
       - ../../stellar-php/stellar:/youless-logger/vendor/stellar/stellar/

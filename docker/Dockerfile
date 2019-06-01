@@ -51,6 +51,6 @@ COPY docker/php/conf.d/*.ini /usr/local/etc/php/conf.d/
 COPY --from=builder /youless-logger/ /youless-logger/
 
 WORKDIR /youless-logger/
-VOLUME ["/youless-logger/data/", "/youless-logger/log/"]
+VOLUME ["/youless-logger/config/", "/youless-logger/data/", "/youless-logger/log/"]
 
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]
