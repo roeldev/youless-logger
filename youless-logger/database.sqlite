@@ -1,8 +1,0 @@
-CREATE TABLE data(
-   timestamp INT NOT NULL,
-   delta CHAR(5) NOT NULL,
-   unit VARCHAR(4) NOT NULL,
-   value INT NOT NULL,
-   date DATE NOT NULL,
-   PRIMARY KEY(timestamp, delta)
-);

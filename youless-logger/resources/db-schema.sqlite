@@ -1,0 +1,9 @@
+CREATE TABLE data(
+   timestamp INT NOT NULL,
+   resolution VARCHAR(5) NOT NULL,
+   category_id INT(1) NOT NULL,
+   value INT NOT NULL,
+   unit VARCHAR(4) NOT NULL,
+   date DATE NOT NULL,
+   PRIMARY KEY(timestamp, resolution)
+);
