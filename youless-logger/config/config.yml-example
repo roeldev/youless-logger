@@ -1,0 +1,10 @@
+devices:
+  default:
+    host: http://youless
+    password: secret
+    api_port: 80
+
+categories:
+  power: default.power
+  gas: default.gas
+  pv: default.s0
