@@ -2,14 +2,19 @@
 
 namespace Casa\YouLess\Device;
 
-use Casa\YouLess\Exceptions\EmptyEnv;
+use Stellar\Common\StringUtil;
 use Stellar\Curl\Curl;
 use Stellar\Curl\Request\Request;
 use Stellar\Curl\Response\JsonResponse;
+use Stellar\Exceptions\Common\MissingArgument;
 
 class LS110 implements DeviceInterface
 {
     protected $_name;
+
+    protected $_host;
+
+    protected $_password;
 
     protected $_mac;
 
@@ -36,9 +41,16 @@ class LS110 implements DeviceInterface
         return [];
     }
 
-    public function __construct(string $name)
+    public function __construct(string $name, array $settings)
     {
+        $host = $settings['host'] ?? null;
+        if (empty($host) || !\is_string($host)) {
+            throw MissingArgument::factory(static::class, 'host')->create();
+        }
+
         $this->_name = $name;
+        $this->_host = StringUtil::suffix($host, '/');
+        $this->_password = $settings['password'] ?? null;
     }
 
     /** {@inheritDoc} */
@@ -48,14 +60,9 @@ class LS110 implements DeviceInterface
     }
 
     /** {@inheritDoc} */
-    public function getHost() : ?string
+    public function getHost() : string
     {
-        $host = \getenv('YOULESS_HOST');
-        if (!$host || !\is_string($host)) {
-            return null;
-        }
-
-        return \rtrim($host, '/');
+        return $this->_host;
     }
 
     /** {@inheritDoc} */
@@ -92,12 +99,7 @@ class LS110 implements DeviceInterface
     /** {@inheritDoc} */
     public function createRequest(string $path) : Request
     {
-        $host = $this->getHost();
-        if (!$host) {
-            throw EmptyEnv::factory('YOULESS_HOST')->create();
-        }
-
-        return Curl::get($host . $path);
+        return Curl::get($this->getHost() . StringUtil::unprefix($path, '/'));
     }
 
     public function toArray() : array

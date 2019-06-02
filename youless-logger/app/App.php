@@ -11,7 +11,7 @@ use Stellar\Common\Contracts\SingletonInterface;
 use Stellar\Container\Registry;
 use Symfony\Component\Console\Application;
 
-class App extends Application implements SingletonInterface
+final class App extends Application implements SingletonInterface
 {
     /**
      * @return static
@@ -24,6 +24,8 @@ class App extends Application implements SingletonInterface
     public function __construct()
     {
         parent::__construct('Logger service for YouLess energy monitor', 'v1.0.0');
+
+        Config::instance();
 
         $this->addCommands([
             new DeviceCommand(),
