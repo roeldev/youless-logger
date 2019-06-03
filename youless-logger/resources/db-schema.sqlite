@@ -1,9 +1,28 @@
+CREATE TABLE categories(
+    id INT PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    device VARCHAR NOT NULL,
+    type VARCHAR(3) NOT NULL
+);
+
+CREATE TABLE timeframes(
+    id INT(1) PRIMARY KEY,
+    name VARCHAR(5),
+    alias CHAR(1),
+    deltatime INT
+);
+
 CREATE TABLE data(
    timestamp INT NOT NULL,
-   resolution VARCHAR(5) NOT NULL,
-   category_id INT(1) NOT NULL,
+   category_id INT NOT NULL,
+   timeframe_id INT(1) NOT NULL,
    value INT NOT NULL,
-   unit VARCHAR(4) NOT NULL,
-   date DATE NOT NULL,
-   PRIMARY KEY(timestamp, resolution)
+   PRIMARY KEY(timestamp, category_id, timeframe_id)
 );
+
+INSERT INTO timeframes VALUES
+    ( 1, 'min', 'h', 60 ),
+    ( 2, '10min', 'w', 600 ),
+    ( 3, 'hour', 'd', 3600 ),
+    ( 4, 'day', 'm', 86400 )
+;
