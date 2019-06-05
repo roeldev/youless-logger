@@ -1,28 +1,48 @@
-CREATE TABLE categories(
-    id INT PRIMARY KEY,
-    name VARCHAR NOT NULL,
-    device VARCHAR NOT NULL,
-    type VARCHAR(3) NOT NULL
+CREATE TABLE devices(
+    id INTEGER PRIMARY KEY,
+    ip CHAR(15) NOT NULL UNIQUE,
+    name VARCHAR NOT NULL UNIQUE,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME
 );
 
-CREATE TABLE timeframes(
-    id INT(1) PRIMARY KEY,
-    name VARCHAR(5),
-    alias CHAR(1),
-    deltatime INT
+CREATE TABLE categories(
+    id INTEGER PRIMARY KEY,
+    device_id VARCHAR NOT NULL,
+    type VARCHAR(5) NOT NULL,
+    name VARCHAR,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME,
+    UNIQUE(device_id, type)
+);
+
+CREATE TABLE intervals(
+    id INTEGER PRIMARY KEY,
+    name VARCHAR(5) NOT NULL UNIQUE
+);
+
+CREATE TABLE units(
+    id INTEGER PRIMARY KEY,
+    name VARCHAR(5) NOT NULL UNIQUE
 );
 
 CREATE TABLE data(
    timestamp INT NOT NULL,
    category_id INT NOT NULL,
-   timeframe_id INT(1) NOT NULL,
+   interval_id INT(1) NOT NULL,
    value INT NOT NULL,
-   PRIMARY KEY(timestamp, category_id, timeframe_id)
-);
+   unit_id INT(1) NOT NULL,
+   PRIMARY KEY(timestamp, category_id, interval_id)
+) WITHOUT ROWID;
 
-INSERT INTO timeframes VALUES
-    ( 1, 'min', 'h', 60 ),
-    ( 2, '10min', 'w', 600 ),
-    ( 3, 'hour', 'd', 3600 ),
-    ( 4, 'day', 'm', 86400 )
-;
+INSERT INTO intervals VALUES
+    ( 1, 'min' ),
+    ( 2, '10min' ),
+    ( 3, 'hour' ),
+    ( 4, 'day' );
+
+INSERT INTO units VALUES
+    ( 1, 'watt' ),
+    ( 2, 'kwh' ),
+    ( 3, 'liter' ),
+    ( 4, 'm3' );
