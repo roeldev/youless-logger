@@ -1,5 +1,5 @@
-config/*.yml
-config/*.conf
+config/config.php
+config/**/*.conf
 data/**/*.db
 vendor/
 .env
