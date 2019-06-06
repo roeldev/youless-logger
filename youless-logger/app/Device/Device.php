@@ -1,37 +1,18 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess\Devices;
+namespace Casa\YouLess\Device;
 
+use Casa\YouLess\Device\Models\ModelInterface;
 use Stellar\Common\StringUtil;
 use Stellar\Curl\Curl;
 use Stellar\Curl\Request\Request;
 use Stellar\Curl\Response\JsonResponse;
 use Stellar\Exceptions\Common\MissingArgument;
 
-class LS110 implements DeviceInterface
+class Device
 {
-    /** {@inheritDoc} */
-    public static function getPowerRange() : array
-    {
-        return [
-            'h' => 2,
-            'w' => 3,
-            'd' => 7,
-            'm' => 12,
-        ];
-    }
-
-    /** {@inheritDoc} */
-    public static function getGasRange() : array
-    {
-        return [];
-    }
-
-    /** {@inheritDoc} */
-    public static function getS0Range() : array
-    {
-        return [];
-    }
+    /** @var int */
+    protected $_id;
 
     /** @var string */
     protected $_name;
@@ -48,20 +29,51 @@ class LS110 implements DeviceInterface
     /** @var string */
     protected $_mac;
 
-    /** @var string[] */
-    protected $_activeTypes = [];
+    /** @var ModelInterface */
+    protected $_model;
 
-    public function __construct(string $name, array $settings)
+    /** @var array<string, array<string, int>> */
+    protected $_services = [];
+
+    protected function _determineActiveServices(array $services) : array
     {
-        $ip = $settings['ip'] ?? null;
+        $result = [];
+
+        $validServices = $this->_model->getServicePages();
+        foreach ($validServices as $service => $pages) {
+            if (true === ($services[ $service ] ?? false) || \in_array($service, $services, true)) {
+                $result[ $service ] = $pages;
+            }
+        }
+
+        return $result;
+    }
+
+    public function __construct(ModelInterface $model, string $name, array $config, array $record = [])
+    {
+        $ip = $config['ip'] ?? null;
         if (empty($ip) || !\is_string($ip)) {
             throw MissingArgument::factory(static::class, 'ip')->create();
         }
 
+        $this->_id = $record['id'] ?? null;
         $this->_name = $name;
         $this->_host = \sprintf('http://%s/', $ip);
         $this->_ip = $ip;
-        $this->_password = $settings['password'] ?? null;
+        $this->_password = $config['password'] ?? null;
+
+        $this->_model = $model;
+        if (!isset($config['services'])) {
+            $this->_services = $model->getServicePages();
+        }
+        else {
+            $this->_services = $this->_determineActiveServices($config['services']);
+        }
+    }
+
+    public function getId() : ?int
+    {
+        return $this->_id;
     }
 
     /** {@inheritDoc} */
@@ -83,9 +95,9 @@ class LS110 implements DeviceInterface
     }
 
     /** {@inheritDoc} */
-    public function getModel() : string
+    public function getModel() : ModelInterface
     {
-        return 'LS110';
+        return $this->_model;
     }
 
     /** {@inheritDoc} */
@@ -103,16 +115,23 @@ class LS110 implements DeviceInterface
     }
 
     /** {@inheritDoc} */
+    public function getActiveServices() : array
+    {
+        return $this->_services;
+    }
+
+    /** {@inheritDoc} */
     public function createRequest(string $path) : Request
     {
-        return Curl::get($this->getHost() . StringUtil::unprefix($path, '/'));
+        return Curl::get($this->getHost() . StringUtil::unprefix($path, '/'))
+            ->throwExceptionOnFailure();
     }
 
     public function toArray() : array
     {
         return [
             'name' => $this->getName(),
-            'model' => $this->getModel(),
+            'model' => (string) $this->getModel(),
             'host' => $this->getHost(),
             'ip' => $this->getIp(),
             'mac' => $this->getMac(),
