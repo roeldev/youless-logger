@@ -18,10 +18,10 @@ return [
     |   The password needed to access the device's API. Omit or leave empty
     |   when no password is required.
     |
-    | - update (array<string,bool>)
-    |   Indicate which data types of the device should be updated. Valid keys
-    |   are 'power', 'gas' and 's0'. Values should be booleans where 'true'
-    |   means enabled and 'false' disabled.
+    | - services (array<string,bool>)
+    |   Indicate which data services of the device should be updated. Valid
+    |   keys are 'power', 'gas' and 's0'. Values should be booleans where
+    |   'true' means enabled and 'false' disabled.
     |
     | - classic_api
     |   Override classic API settings for this device only. See config section
@@ -34,7 +34,7 @@ return [
         'default' => [
             'ip' => '*.*.*.*',
             'password' => 'secret',
-            'update' => [
+            'services' => [
                 'power' => true,
                 'gas' => true,
                 's0' => false,
@@ -51,7 +51,7 @@ return [
     | Categories
     |--------------------------------------------------------------------------
     |
-    | Here you can give each category (which is a device and data type
+    | Here you can give each category (which is a device and data service
     | combination) a unique alias.
     */
     'categories' => [

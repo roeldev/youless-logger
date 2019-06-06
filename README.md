@@ -25,7 +25,7 @@ Key features are:
 - no more limits on monitored data
 - get data from multiple devices
 - support older YouLess versions
-- only monitor the data types you want
+- only monitor the data services you want
 - configure update intervals
 - cli to instant trigger an update
 - classic api can serve older data
@@ -58,12 +58,11 @@ services:
 ## Configuration
 Support for multiple YouLess devices means a little more configuration. Altough it should be pretty self explanatory, most important stuff is mentioned in this chapter. But first, have a look at the _[sample config](youless-logger/config/config-example.php)_ for a quick overview of possibilities.
 
-Each device should have at least an _ip_ option set so the logger can reach the device's API. All other values are not 
-required. However this probably results in way too much useless data being saved. Therefore it's recommended to only enable the data type(s) that are actually monitored. and disables classic API support
+Each device should have at least an _ip_ option set so the logger can reach the device's API. All other values are not required. However this probably results in way too much useless data being saved. Therefore it's recommended to only enable the data service(s) that are actually monitored. and disables classic API support
 > **Note:** Latest YouLess devices support data from three different counters: power, gas and s0. Older versions only support power.
 
 Below example adds two devices:
-1. _house_ which requires a password to access the API on _192.168.1.27_ and provides data of power and gas usage;
+1. _house_ which requires a password to access the API on _192.168.1.27_ and provides data of power and gas consumption;
 2. _shed_ which is hosted on _192.168.1.32_ and only provides data of the s0 pulse counter.
 
 ```
@@ -71,7 +70,7 @@ Below example adds two devices:
     'house' => [
         'ip' => 'http://192.168.1.27',
         'password' => 'secret',
-        'update' => [
+        'services' => [
             'power' => true,
             'gas' => true,
             's0' => false,
@@ -79,7 +78,7 @@ Below example adds two devices:
     ],
     'shed' => [
         'ip' => 'http://192.168.1.32'
-        'update' => [ 's0' ]
+        'services' => [ 's0' ]
     ]
 ]
 ```
@@ -102,7 +101,7 @@ A new SQLite database is created on first run. All data values are stored in the
 | 4 | day | m | kWh | m3 (cubic meter)
 
 ### Units
-| Id | Unit | API equiv. | Type |
+| Id | Unit | API equiv. | Service |
 |----|------|------------|------|
 | 1 | watt | Watt | power/s0
 | 2 | kwh | kWh | power/s0

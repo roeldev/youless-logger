@@ -9,11 +9,11 @@ CREATE TABLE devices(
 CREATE TABLE categories(
     id INTEGER PRIMARY KEY,
     device_id VARCHAR NOT NULL,
-    type VARCHAR(5) NOT NULL,
+    service VARCHAR(5) NOT NULL,
     name VARCHAR,
     created_at DATETIME NOT NULL,
     updated_at DATETIME,
-    UNIQUE(device_id, type)
+    UNIQUE(device_id, service)
 );
 
 CREATE TABLE intervals(
