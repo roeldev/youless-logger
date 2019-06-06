@@ -73,7 +73,7 @@ class LS110 implements DeviceInterface
     /** {@inheritDoc} */
     public function getHost() : string
     {
-        return $this->_ip;
+        return $this->_host;
     }
 
     /** {@inheritDoc} */
