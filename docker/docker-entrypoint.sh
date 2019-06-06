@@ -1,7 +1,8 @@
 #!/bin/sh
 set -e
 
-if [[ `ls -1 /youless-logger/config/supervisord/*.conf 2>/dev/null | wc -l` -eq 0 ]]
+if [[ ! -d /youless-logger/config/supervisord/ || \
+    `ls -1 /youless-logger/config/supervisord/*.conf 2>/dev/null | wc -l` -eq 0 ]]
 then
     cp -avr \
         /youless-logger/resources/supervisord-defaults/* \
