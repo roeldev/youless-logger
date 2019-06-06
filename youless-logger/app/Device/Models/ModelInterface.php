@@ -9,5 +9,7 @@ interface ModelInterface extends SingletonInterface, StringableInterface
 {
     public function getServices() : array;
 
-    public function getServicePages() : array;
+    public function getServicesPages() : array;
+
+    public function getServicePages(string $service) : array;
 }

@@ -39,10 +39,10 @@ class Device
     {
         $result = [];
 
-        $validServices = $this->_model->getServicePages();
-        foreach ($validServices as $service => $pages) {
+        $validServices = $this->_model->getServices();
+        foreach ($validServices as $service) {
             if (true === ($services[ $service ] ?? false) || \in_array($service, $services, true)) {
-                $result[ $service ] = $pages;
+                $result[] = $service;
             }
         }
 
@@ -64,7 +64,7 @@ class Device
 
         $this->_model = $model;
         if (!isset($config['services'])) {
-            $this->_services = $model->getServicePages();
+            $this->_services = $model->getServices();
         }
         else {
             $this->_services = $this->_determineActiveServices($config['services']);

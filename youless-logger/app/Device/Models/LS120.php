@@ -17,7 +17,7 @@ final class LS120 implements ModelInterface
     }
 
     /** {@inheritDoc} */
-    public function getServicePages() : array
+    public function getServicesPages() : array
     {
         return [
             'power' => [
@@ -40,6 +40,12 @@ final class LS120 implements ModelInterface
                 'm' => 12,
             ],
         ];
+    }
+
+    /** {@inheritDoc} */
+    public function getServicePages(string $service) : array
+    {
+        return $this->getServicesPages()[ $service ] ?? [];
     }
 
     /** {@inheritDoc} */

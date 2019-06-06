@@ -3,49 +3,60 @@
 namespace Casa\YouLess\Commands\Update;
 
 use Casa\YouLess\Database\UsageDataTransaction;
+use Casa\YouLess\Device\DeviceFactory;
 use Casa\YouLess\Request\Request;
-use Casa\YouLess\Response\UsageData;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class UpdateCommand extends Command
+class UpdateCommand extends AbstractUpdateCommand
 {
     protected static $defaultName = 'update';
 
-    protected function configure()
+    protected function configure() : void
     {
+        parent::configure();
         $this->setDescription('Update latest data from YouLess device');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function _request(InputInterface $input, DeviceInterface $device, string $type)
     {
-        for ($i=1; $i<=30; $i++) {
-            /** @var UsageData $response */
-            $response = Request::updatePower('w', $i)->response();
+        // $request = UsageDataFactory::instance()->createRequest($device, 'power');
 
-            print_r($response->getValues());
+        $factory = UsageDataRequestFactory::instance()
+            ->create($type, $device);
 
+        $this->_applyOptionsToFactory($input, $factory);
+
+        // create Stellar\Curl\Request\MultiRequest
+        // with Requests to all endpoints according to options
+        $request = $factory->request()
+            ->onBatchReach([ $this, '_saveData' ]);
+
+        $this->_applyOptionsToRequest($input, $request);
+        $request->execute();
+    }
+
+    protected function _saveData(array $responses) : void
+    {
+        foreach ($responses as $response) {
             (new UsageDataTransaction($response))->save();
-            sleep(5);
         }
-        for ($i=1; $i<=70; $i++) {
-            /** @var UsageData $response */
-            $response = Request::updatePower('d', $i)->response();
 
-            print_r($response->getValues());
+        \sleep($this->_sleep);
+    }
 
-            (new UsageDataTransaction($response))->save();
-            sleep(5);
-        }
-        for ($i=1; $i<=12; $i++) {
-            /** @var UsageData $response */
-            $response = Request::updatePower('m', $i)->response();
+    protected function execute(InputInterface $input, OutputInterface $output) : void
+    {
+        parent::execute($input, $output);
 
-            print_r($response->getValues());
-
-            (new UsageDataTransaction($response))->save();
-            sleep(5);
+        $devices = $this->_getDeviceNames($input);
+        foreach ($devices as $device) {
+            $device = DeviceFactory::instance()->get($device);
+            $services = $device->getActiveServices();
+            foreach ($services as $service) {
+                print_r([ $device->getName(), $service, $device->getModel()->getServicePages($service) ]);
+                // $this->_request($input, $device, $type);
+            }
         }
     }
 }
