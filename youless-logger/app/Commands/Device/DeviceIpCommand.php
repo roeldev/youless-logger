@@ -2,22 +2,23 @@
 
 namespace Casa\YouLess\Commands\Device;
 
-use Casa\YouLess\Device;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DeviceIpCommand extends Command
+class DeviceIpCommand extends AbstractDeviceCommand
 {
     protected static $defaultName = 'device:ip';
 
-    protected function configure()
+    protected function configure() : void
     {
+        parent::configure();
         $this->setDescription('Display IP address of YouLess device');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln(Device::instance()->getIp());
+        $output->writeln(
+            $this->_getDevice($input)->getIp()
+        );
     }
 }
