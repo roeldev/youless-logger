@@ -58,7 +58,8 @@ services:
 ## Configuration
 Support for multiple YouLess devices means a little more configuration. Altough it should be pretty self explanatory, most important stuff is mentioned in this chapter. But first, have a look at the _[sample config](youless-logger/config/config-example.php)_ for a quick overview of possibilities.
 
-Each device should have at least a _host_ option set so the logger can reach the device's API. All other values are not required. However this probably results in way too much useless data being saved. Therefore it's recommended to only enable the data type(s) that are actually monitored. and disables classic API support
+Each device should have at least an _ip_ option set so the logger can reach the device's API. All other values are not 
+required. However this probably results in way too much useless data being saved. Therefore it's recommended to only enable the data type(s) that are actually monitored. and disables classic API support
 > **Note:** Latest YouLess devices support data from three different counters: power, gas and s0. Older versions only support power.
 
 Below example adds two devices:
@@ -68,7 +69,7 @@ Below example adds two devices:
 ```
 'devices' => [
     'house' => [
-        'host' => 'http://192.168.1.27',
+        'ip' => 'http://192.168.1.27',
         'password' => 'secret',
         'update' => [
             'power' => true,
@@ -77,7 +78,7 @@ Below example adds two devices:
         ]
     ],
     'shed' => [
-        'host' => 'http://192.168.1.32'
+        'ip' => 'http://192.168.1.32'
         'update' => [ 's0' ]
     ]
 ]

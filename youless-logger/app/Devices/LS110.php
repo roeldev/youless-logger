@@ -10,14 +10,6 @@ use Stellar\Exceptions\Common\MissingArgument;
 
 class LS110 implements DeviceInterface
 {
-    protected $_name;
-
-    protected $_host;
-
-    protected $_password;
-
-    protected $_mac;
-
     /** {@inheritDoc} */
     public static function getPowerRange() : array
     {
@@ -41,15 +33,34 @@ class LS110 implements DeviceInterface
         return [];
     }
 
+    /** @var string */
+    protected $_name;
+
+    /** @var string */
+    protected $_host;
+
+    /** @var string */
+    protected $_ip;
+
+    /** @var string */
+    protected $_password;
+
+    /** @var string */
+    protected $_mac;
+
+    /** @var string[] */
+    protected $_activeTypes = [];
+
     public function __construct(string $name, array $settings)
     {
-        $host = $settings['host'] ?? null;
-        if (empty($host) || !\is_string($host)) {
-            throw MissingArgument::factory(static::class, 'host')->create();
+        $ip = $settings['ip'] ?? null;
+        if (empty($ip) || !\is_string($ip)) {
+            throw MissingArgument::factory(static::class, 'ip')->create();
         }
 
         $this->_name = $name;
-        $this->_host = StringUtil::suffix($host, '/');
+        $this->_host = \sprintf('http://%s/', $ip);
+        $this->_ip = $ip;
         $this->_password = $settings['password'] ?? null;
     }
 
@@ -62,22 +73,13 @@ class LS110 implements DeviceInterface
     /** {@inheritDoc} */
     public function getHost() : string
     {
-        return $this->_host;
+        return $this->_ip;
     }
 
     /** {@inheritDoc} */
     public function getIp() : ?string
     {
-        $host = $this->getHost();
-        if (!$host) {
-            return null;
-        }
-
-        $result = \gethostbyname($host);
-        $result = \rtrim($result, '/');
-        $result = \str_replace('http://', '', $result);
-
-        return $result;
+        return $this->_ip;
     }
 
     /** {@inheritDoc} */
@@ -111,6 +113,7 @@ class LS110 implements DeviceInterface
         return [
             'name' => $this->getName(),
             'model' => $this->getModel(),
+            'host' => $this->getHost(),
             'ip' => $this->getIp(),
             'mac' => $this->getMac(),
         ];

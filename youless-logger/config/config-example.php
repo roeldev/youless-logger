@@ -11,8 +11,8 @@ return [
     | key (which is used as name) and array with device specific settings
     | to the below 'devices' array.
     |
-    | - host (string)
-    |   Host or IP address
+    | - ip (string)
+    |   IP address
     |
     | - password (string)
     |   The password needed to access the device's API. Omit or leave empty
@@ -32,7 +32,7 @@ return [
     */
     'devices' => [
         'default' => [
-            'host' => 'http://youless',
+            'ip' => '*.*.*.*',
             'password' => 'secret',
             'update' => [
                 'power' => true,
