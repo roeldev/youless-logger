@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess\Device;
+namespace Casa\YouLess\Devices;
 
 use Stellar\Common\Contracts\ArrayableInterface;
 use Stellar\Curl\Request\Request;

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess\Device;
+namespace Casa\YouLess\Devices;
 
 use Stellar\Common\StringUtil;
 use Stellar\Curl\Curl;
@@ -73,7 +73,11 @@ class LS110 implements DeviceInterface
             return null;
         }
 
-        return \str_replace('http://', '', \gethostbyname($host));
+        $result = \gethostbyname($host);
+        $result = \rtrim($result, '/');
+        $result = \str_replace('http://', '', $result);
+
+        return $result;
     }
 
     /** {@inheritDoc} */

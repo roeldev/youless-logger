@@ -1,14 +1,19 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess\Device;
+namespace Casa\YouLess\Devices;
 
+use Casa\YouLess\Exceptions\UnknownDevice;
 use Stellar\Container\AbstractFactory;
 use Stellar\Container\Container;
+use Stellar\Container\Exceptions\NotFound;
 use Stellar\Container\Registry;
 use Stellar\Container\ServiceRequest;
+use Stellar\Container\Traits\SingletonInstanceTrait;
 
-final class DeviceFactory extends AbstractFactory
+final class DeviceFactory
 {
+    use SingletonInstanceTrait;
+
     /** @var Container */
     protected $_container;
 
@@ -24,8 +29,18 @@ final class DeviceFactory extends AbstractFactory
         });
     }
 
+    /**
+     * @throws UnknownDevice
+     */
     public function get(string $name = 'default') : DeviceInterface
     {
-        return $this->_container->get($name);
+        try {
+            return $this->_container->get($name);
+        }
+        catch (NotFound $notFound) {
+            throw UnknownDevice::factory($name)
+                ->withPrevious($notFound)
+                ->create();
+        }
     }
 }

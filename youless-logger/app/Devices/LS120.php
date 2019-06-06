@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess\Device;
+namespace Casa\YouLess\Devices;
 
 class LS120 extends LS110
 {
