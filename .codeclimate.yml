@@ -4,10 +4,10 @@ plugins:
     config:
       editorconfig: .editorconfig
 
-  phpcodesniffer:
-    enabled: true
-    config:
-      standard: youless-logger/vendor/roeldev/phpcs-ruleset/phpcs-ruleset.xml
+#  phpcodesniffer:
+#    enabled: true
+#    config:
+#      standard: https://github.com/roeldev/phpcs-ruleset/blob/master/phpcs-ruleset.xml
 
   phpmd:
     enabled: true
