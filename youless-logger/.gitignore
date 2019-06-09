@@ -3,3 +3,4 @@ config/**/*.conf
 data/**/*.db
 vendor/
 .env
+version.txt

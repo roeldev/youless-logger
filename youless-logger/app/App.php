@@ -13,6 +13,8 @@ use Symfony\Component\Console\Application;
 
 final class App extends Application implements SingletonInterface
 {
+    protected const VERSION_FILE = '/youless-logger/version.txt';
+
     /**
      * @return static
      */
@@ -21,9 +23,19 @@ final class App extends Application implements SingletonInterface
         return Registry::singleton(static::class);
     }
 
+    protected function _readVersion() : string
+    {
+        $result = false;
+        if (\file_exists(self::VERSION_FILE)) {
+            $result = \file_get_contents(self::VERSION_FILE);
+        }
+
+        return $result ?: 'UNKNOWN';
+    }
+
     public function __construct()
     {
-        parent::__construct('Logger service for YouLess energy monitor', 'v1.0.0');
+        parent::__construct('Logger service for YouLess energy monitor', $this->_readVersion());
 
         Config::instance();
 
