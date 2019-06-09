@@ -3,6 +3,7 @@
 namespace Casa\YouLess\Commands\Update;
 
 use Casa\YouLess\Config;
+use Casa\YouLess\Database\UsageDataTransaction;
 use Stellar\Common\ArrayUtil;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -29,6 +30,12 @@ abstract class AbstractUpdateCommand extends Command
     protected const OPTION_BATCH = 'batch';
 
     protected const OPTION_SLEEP = 'sleep';
+
+    protected const SERVICE_ENDPOINTS = [
+        'power' => 'V',
+        'gas' => 'W',
+        's0' => 'Z',
+    ];
 
     protected $_batchSize;
 
@@ -66,6 +73,44 @@ abstract class AbstractUpdateCommand extends Command
     {
         $request->withBatchSize($this->_batchSize);
         $request->withSleep($this->_sleep);
+    }
+
+    protected function _request(InputInterface $input, DeviceInterface $device, string $service) : void
+    {
+        $requests = [];
+
+        $servicePages = $device->getModel()->getServicePages($service);
+        foreach ($servicePages as $page => $range) {
+            for ($i = 1; $i <= $range; $i++) {
+                $requests[] = $device->createRequest(self::SERVICE_ENDPOINTS[ $service ])
+                    ->withQueryParam($page, $i)
+                    ->withResponseAs(UsageData::class);
+            }
+        }
+
+        if (empty($requests)) {
+            return;
+        }
+
+        $batches = \array_chunk($requests, $this->_batchSize);
+        while (true) {
+            Curl::multi(...\array_shift($batches))
+                ->execute()
+                ->forEach([ $this, '_processRequest' ])
+                ->close();
+
+            if (empty($batches)) {
+                break;
+            }
+
+            \sleep($this->_sleep);
+        }
+    }
+
+    protected function _processRequest(RequestInterface $request) : void
+    {
+        $response = $request->response();
+        (new UsageDataTransaction($response))->save();
     }
 
     protected function configure() : void

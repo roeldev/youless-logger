@@ -7,6 +7,9 @@ use Casa\YouLess\Commands\Device\DeviceIpCommand;
 use Casa\YouLess\Commands\Device\DeviceMacCommand;
 use Casa\YouLess\Commands\Device\DeviceModelCommand;
 use Casa\YouLess\Commands\Update\UpdateCommand;
+use Casa\YouLess\Commands\Update\UpdateGasCommand;
+use Casa\YouLess\Commands\Update\UpdatePowerCommand;
+use Casa\YouLess\Commands\Update\UpdateS0Command;
 use Stellar\Common\Contracts\SingletonInterface;
 use Stellar\Container\Registry;
 use Symfony\Component\Console\Application;
@@ -45,6 +48,9 @@ final class App extends Application implements SingletonInterface
             new DeviceMacCommand(),
             new DeviceModelCommand(),
             new UpdateCommand(),
+            new UpdatePowerCommand(),
+            new UpdateGasCommand(),
+            new UpdateS0Command(),
         ]);
     }
 }
