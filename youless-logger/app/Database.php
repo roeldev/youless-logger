@@ -14,7 +14,7 @@ final class Database extends PDO implements SingletonInterface
     {
         parent::__construct('sqlite:/youless-logger/data/youless-logger.db', null, null, [
             PDO::ATTR_CASE => PDO::CASE_NATURAL,
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         ]);
     }
 }

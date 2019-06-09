@@ -2,6 +2,7 @@
 
 namespace Casa\YouLess\Device;
 
+use Casa\YouLess\Database;
 use Casa\YouLess\Device\Models\ModelInterface;
 use Stellar\Common\StringUtil;
 use Stellar\Curl\Curl;
@@ -11,7 +12,7 @@ use Stellar\Exceptions\Common\MissingArgument;
 
 class Device
 {
-    /** @var int */
+    /** @var ?int */
     protected $_id;
 
     /** @var string */
@@ -28,6 +29,9 @@ class Device
 
     /** @var string */
     protected $_mac;
+
+    /** @var array */
+    protected $_record;
 
     /** @var ModelInterface */
     protected $_model;
@@ -49,6 +53,34 @@ class Device
         return $result;
     }
 
+    protected function _createInsertStatement() : \PDOStatement
+    {
+        $statement = Database::instance()
+            ->prepare('INSERT INTO `devices` (`ip`, `name`, `created_at`) 
+                        VALUES (:ip, :name, :created_at)');
+
+        $statement->bindValue('ip', $this->_ip);
+        $statement->bindValue('name', $this->_name);
+        $statement->bindValue('created_at', \time());
+
+        return $statement;
+    }
+
+    protected function _createUpdateStatement() : \PDOStatement
+    {
+        $statement = Database::instance()
+            ->prepare('UPDATE `devices` 
+                        SET `ip` = :ip, `name` = :name, `updated_at` = :updated_at 
+                        WHERE `id` = :id ');
+
+        $statement->bindValue('id', $this->_id);
+        $statement->bindValue('ip', $this->_ip);
+        $statement->bindValue('name', $this->_name);
+        $statement->bindValue('updated_at', \time());
+
+        return $statement;
+    }
+
     public function __construct(ModelInterface $model, string $name, array $config, array $record = [])
     {
         $ip = $config['ip'] ?? null;
@@ -56,11 +88,12 @@ class Device
             throw MissingArgument::factory(static::class, 'ip')->create();
         }
 
-        $this->_id = $record['id'] ?? null;
+        $this->_id = isset($record['id']) ? (int) $record['id'] : null;
         $this->_name = $name;
         $this->_host = \sprintf('http://%s/', $ip);
         $this->_ip = $ip;
         $this->_password = $config['password'] ?? null;
+        $this->_record = $record;
 
         $this->_model = $model;
         if (!isset($config['services'])) {
@@ -120,11 +153,30 @@ class Device
         return $this->_services;
     }
 
+    public function isDirty() : bool
+    {
+        return empty($this->_id)
+               || ($this->_record['ip'] ?? null) !== $this->_ip
+               || ($this->_record['name'] ?? null) !== $this->_name;
+    }
+
     /** {@inheritDoc} */
     public function createRequest(string $path) : Request
     {
         return Curl::get($this->getHost() . StringUtil::unprefix($path, '/'))
             ->throwExceptionOnFailure();
+    }
+
+    public function save() : void
+    {
+        $createUpdateStatement = empty($this->_id) ? $this->_createInsertStatement() : $this->_createUpdateStatement();
+        $createUpdateStatement->execute();
+
+        $syncStatement = Database::instance()
+            ->prepare('SELECT * FROM `devices` WHERE `id` = ?');
+
+        $syncStatement->execute([ $this->_id ]);
+        $this->_record = $syncStatement->fetch(\PDO::FETCH_ASSOC);
     }
 
     public function toArray() : array
