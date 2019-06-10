@@ -52,9 +52,5 @@ final class Config implements SingletonInterface
     public function __construct()
     {
         $this->_config = include '/youless-logger/config/config.php';
-
-        foreach ($this->devices as $name => $settings) {
-            DeviceFactory::instance()->create($name, $settings);
-        }
     }
 }

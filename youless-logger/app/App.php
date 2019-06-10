@@ -10,6 +10,8 @@ use Casa\YouLess\Commands\Update\UpdateCommand;
 use Casa\YouLess\Commands\Update\UpdateGasCommand;
 use Casa\YouLess\Commands\Update\UpdatePowerCommand;
 use Casa\YouLess\Commands\Update\UpdateS0Command;
+use Casa\YouLess\Device\DeviceFactory;
+use Casa\YouLess\Interval\IntervalFactory;
 use Stellar\Common\Contracts\SingletonInterface;
 use Stellar\Container\Registry;
 use Symfony\Component\Console\Application;
@@ -40,7 +42,10 @@ final class App extends Application implements SingletonInterface
     {
         parent::__construct('Logger service for YouLess energy monitor', $this->_readVersion());
 
-        Config::instance();
+        $config = Config::instance();
+
+        DeviceFactory::instance()->init($config->devices);
+        IntervalFactory::instance()->init();
 
         $this->addCommands([
             new DeviceCommand(),
