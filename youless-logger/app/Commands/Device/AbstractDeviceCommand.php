@@ -13,7 +13,7 @@ abstract class AbstractDeviceCommand extends Command
     protected function _getDevice(InputInterface $input) : Device
     {
         return DeviceFactory::instance()
-            ->get($input->getArgument('name'));
+            ->getFromName($input->getArgument('name'));
     }
 
     protected function configure() : void

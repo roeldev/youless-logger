@@ -4,14 +4,19 @@ namespace Casa\YouLess\Device;
 
 use Casa\YouLess\Database;
 use Casa\YouLess\Device\Models\ModelInterface;
+use Stellar\Common\Contracts\ArrayableInterface;
+use Stellar\Common\Contracts\StringableInterface;
 use Stellar\Common\StringUtil;
+use Stellar\Common\Traits\ToString;
 use Stellar\Curl\Curl;
 use Stellar\Curl\Request\Request;
 use Stellar\Curl\Response\JsonResponse;
 use Stellar\Exceptions\Common\MissingArgument;
 
-class Device
+class Device implements ArrayableInterface, StringableInterface
 {
+    use ToString;
+
     /** @var ?int */
     protected $_id;
 
@@ -109,31 +114,26 @@ class Device
         return $this->_id;
     }
 
-    /** {@inheritDoc} */
     public function getName() : string
     {
         return $this->_name;
     }
 
-    /** {@inheritDoc} */
     public function getHost() : string
     {
         return $this->_host;
     }
 
-    /** {@inheritDoc} */
     public function getIp() : ?string
     {
         return $this->_ip;
     }
 
-    /** {@inheritDoc} */
     public function getModel() : ModelInterface
     {
         return $this->_model;
     }
 
-    /** {@inheritDoc} */
     public function getMac() : ?string
     {
         if (!$this->_mac) {
@@ -147,10 +147,14 @@ class Device
         return $this->_mac;
     }
 
-    /** {@inheritDoc} */
     public function getActiveServices() : array
     {
         return $this->_services;
+    }
+
+    public function hasActiveService(string $service) : bool
+    {
+        return \in_array($service, $this->_services, true);
     }
 
     public function isDirty() : bool
@@ -160,11 +164,11 @@ class Device
                || ($this->_record['name'] ?? null) !== $this->_name;
     }
 
-    /** {@inheritDoc} */
     public function createRequest(string $path) : Request
     {
         return Curl::get($this->getHost() . StringUtil::unprefix($path, '/'))
-            ->throwExceptionOnFailure();
+            ->throwExceptionOnFailure()
+            ->withQueryParam('f', 'j');
     }
 
     public function save() : void
@@ -182,11 +186,16 @@ class Device
     public function toArray() : array
     {
         return [
-            'name' => $this->getName(),
-            'model' => (string) $this->getModel(),
-            'host' => $this->getHost(),
-            'ip' => $this->getIp(),
+            'name' => $this->_name,
+            'model' => (string) $this->_model,
+            'host' => $this->_host,
+            'ip' => $this->_ip,
             'mac' => $this->getMac(),
         ];
+    }
+
+    public function __toString() : string
+    {
+        return $this->_name;
     }
 }

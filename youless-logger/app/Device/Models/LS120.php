@@ -19,6 +19,7 @@ final class LS120 implements ModelInterface
     /** {@inheritDoc} */
     public function getServicesPages() : array
     {
+        // service => [ interval => pages ]
         return [
             'power' => [
                 'h' => 20,
