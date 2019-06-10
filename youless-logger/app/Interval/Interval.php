@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess\TimeFrames;
+namespace Casa\YouLess\Interval;
 
-class TimeFrame
+final class Interval
 {
     protected $_id;
 

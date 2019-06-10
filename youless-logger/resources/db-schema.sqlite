@@ -18,7 +18,8 @@ CREATE TABLE categories(
 
 CREATE TABLE intervals(
     id INTEGER PRIMARY KEY,
-    name VARCHAR(5) NOT NULL UNIQUE
+    name CHAR(1) NOT NULL UNIQUE,
+    alias VARCHAR(5) NOT NULL UNIQUE
 );
 
 CREATE TABLE units(
@@ -36,10 +37,10 @@ CREATE TABLE data(
 ) WITHOUT ROWID;
 
 INSERT INTO intervals VALUES
-    ( 1, 'min' ),
-    ( 2, '10min' ),
-    ( 3, 'hour' ),
-    ( 4, 'day' );
+    ( 1, 'h', 'min' ),
+    ( 2, 'w', '10min' ),
+    ( 3, 'd', 'hour' ),
+    ( 4, 'm', 'day' );
 
 INSERT INTO units VALUES
     ( 1, 'watt' ),
