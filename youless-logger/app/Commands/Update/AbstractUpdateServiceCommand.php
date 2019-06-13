@@ -13,17 +13,17 @@ abstract class AbstractUpdateServiceCommand extends AbstractUpdateCommand
     {
         parent::execute($input, $output);
 
-        $devices = $this->_getDeviceNames($input);
+        $service = $this->getServiceName();
+        $devices = $this->_getDeviceNames();
+
         foreach ($devices as $device) {
             $device = DeviceFactory::instance()->get($device);
-            $service = $this->getServiceName();
-
             if (!$device->hasActiveService($service)) {
-                $output->writeln(\sprintf('Service %s not active for device %s', $service, $device->getName()));
+                $output->writeln(\sprintf('Service `%s` is not active for device `%s`', $service, $device->getName()));
                 continue;
             }
 
-            $this->_request($input, $device, $service);
+            $this->_request($device, $service);
         }
     }
 

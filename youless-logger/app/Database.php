@@ -4,7 +4,7 @@ namespace Casa\YouLess;
 
 use PDO;
 use Stellar\Common\Contracts\SingletonInterface;
-use Stellar\Container\Traits\SingletonInstanceTrait;
+use Stellar\Container\Abilities\SingletonInstanceTrait;
 
 final class Database extends PDO implements SingletonInterface
 {

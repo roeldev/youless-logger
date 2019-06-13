@@ -1,10 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess\Response;
+namespace Casa\YouLess\Usage;
 
+use Stellar\Curl\Contracts\RequestInterface;
 use Stellar\Curl\Response\JsonResponse;
 
-class UsageData extends JsonResponse
+class Response extends JsonResponse
 {
     public const DELTAS = [
         60 => 'min',
@@ -43,12 +44,9 @@ class UsageData extends JsonResponse
         return $result;
     }
 
-    public function __construct(
-        $requestResource,
-        array $usedOptions,
-        string $response
-    ) {
-        parent::__construct($requestResource, $usedOptions, $response);
+    public function __construct(RequestInterface $request, string $response)
+    {
+        parent::__construct($request, $response);
 
         $this->_unit = \trim($this->_data['un']);
         $this->_startTime = \strtotime($this->_data['tm']);

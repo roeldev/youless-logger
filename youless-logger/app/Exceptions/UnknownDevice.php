@@ -2,17 +2,13 @@
 
 namespace Casa\YouLess\Exceptions;
 
-use Stellar\Exceptions\ExceptionFactory;
 use Stellar\Exceptions\Logic\OutOfRangeException;
-use Stellar\Exceptions\Severity;
+use Throwable;
 
 final class UnknownDevice extends OutOfRangeException
 {
-    public static function factory(string $device) : ExceptionFactory
+    public function __construct(string $device, ?Throwable $previous = null)
     {
-        return ExceptionFactory::init(self::class)
-            ->withMessage('Device `{device}` is not configured')
-            ->withArguments(\compact('device'))
-            ->withSeverity(Severity::WARNING());
+        parent::__construct('Device `{device}` is not configured', 0, $previous, \compact('device'));
     }
 }

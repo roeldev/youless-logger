@@ -2,7 +2,10 @@
 
 namespace Casa\YouLess\Interval;
 
-final class Interval
+use Stellar\Common\Arrayify;
+use Stellar\Common\Contracts\ArrayableInterface;
+
+final class Interval implements ArrayableInterface
 {
     protected $_id;
 
@@ -10,14 +13,11 @@ final class Interval
 
     protected $_alias;
 
-    protected $_deltaTime;
-
-    public function __construct(int $id, string $name, string $alias, int $deltaTime)
+    public function __construct(int $id, string $name, string $alias)
     {
         $this->_id = $id;
         $this->_name = $name;
         $this->_alias = $alias;
-        $this->_deltaTime = $deltaTime;
     }
 
     public function getId() : int
@@ -35,8 +35,8 @@ final class Interval
         return $this->_alias;
     }
 
-    public function getDeltaTime() : int
+    public function toArray() : array
     {
-        return $this->_deltaTime;
+        return Arrayify::any($this);
     }
 }

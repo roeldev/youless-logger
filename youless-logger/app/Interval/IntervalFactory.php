@@ -3,10 +3,12 @@
 namespace Casa\YouLess\Interval;
 
 use Casa\YouLess\Database;
+use Casa\YouLess\Exceptions\InvalidInterval;
+use Stellar\Common\StringUtil;
+use Stellar\Container\Abilities\SingletonInstanceTrait;
 use Stellar\Container\Container;
 use Stellar\Container\Registry;
 use Stellar\Container\ServiceRequest;
-use Stellar\Container\Traits\SingletonInstanceTrait;
 
 final class IntervalFactory
 {
@@ -15,8 +17,18 @@ final class IntervalFactory
     /** @var Container */
     protected $_container;
 
-    protected function _requestService(array $record) : ServiceRequest
+    protected function _requestService(string $name) : ServiceRequest
     {
+        $query = Database::instance()
+            ->query('SELECT * FROM `intervals` WHERE `name` = ? OR `alias` = ?', \PDO::FETCH_ASSOC);
+
+        $query->execute([ $name, $name ]);
+        $record = $query->fetch();
+
+        if (empty($record)) {
+            throw new InvalidInterval($name);
+        }
+
         $interval = new Interval(
             (int) $record['id'],
             $record['name'],
@@ -33,24 +45,14 @@ final class IntervalFactory
         $this->_container = Registry::container(self::class);
     }
 
-    public function init() : void
+    public function get(string $name) : Interval
     {
-        $query = Database::instance()->query('SELECT * FROM `intervals`', \PDO::FETCH_ASSOC);
-        $query->execute();
+        $name = StringUtil::unprefix($name, '=');
 
-        $requestServiceFn = \Closure::fromCallable([ $this, '_requestService' ]);
-        foreach ($query->fetchAll() as $record) {
-            $this->_container->request($record['name'], $requestServiceFn, $record);
-        }
-    }
-
-    public function fromName(string $name) : Interval
-    {
-        return $this->_container->get($name);
-    }
-
-    public function fromAlias(string $alias) : Interval
-    {
-        return $this->_container->get($alias);
+        return $this->_container->request(
+            $name,
+            \Closure::fromCallable([ $this, '_requestService' ]),
+            $name
+        );
     }
 }

@@ -3,8 +3,13 @@
 namespace Casa\YouLess\Commands\Update;
 
 use Casa\YouLess\Config;
-use Casa\YouLess\Database\UsageDataTransaction;
+use Casa\YouLess\Device\Device;
+use Casa\YouLess\Interval\IntervalFactory;
+use Casa\YouLess\Usage\RequestBuilder;
+use Casa\YouLess\Usage\Response;
+use Casa\YouLess\Usage\Transaction;
 use Stellar\Common\ArrayUtil;
+use Stellar\Curl\Request\Request;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,13 +22,9 @@ abstract class AbstractUpdateCommand extends Command
 
     protected const OPTION_INTERVAL = 'interval';
 
-    protected const OPTION_INTERVAL_ALL = 'all-intervals';
-
     protected const OPTION_PAGE = 'page';
 
-    protected const OPTION_PAGE_ALL = 'all-pages';
-
-    protected const OPTION_ALL = 'all';
+    protected const OPTION_ALL_PAGES = 'all-pages';
 
     protected const OPTION_REPLACE = 'replace';
 
@@ -31,19 +32,24 @@ abstract class AbstractUpdateCommand extends Command
 
     protected const OPTION_SLEEP = 'sleep';
 
-    protected const SERVICE_ENDPOINTS = [
-        'power' => 'V',
-        'gas' => 'W',
-        's0' => 'Z',
-    ];
+    /** @var InputInterface */
+    protected $_input;
 
+    /** @var OutputInterface */
+    protected $_output;
+
+    /** @var int */
     protected $_batchSize;
 
+    /** @var float */
     protected $_sleep;
 
-    protected function _getDeviceNames(InputInterface $input) : array
+    /** @var bool */
+    protected $_replace = false;
+
+    protected function _getDeviceNames() : array
     {
-        $devices = $input->getArgument(self::ARG_DEVICE);
+        $devices = $this->_input->getArgument(self::ARG_DEVICE);
         if (empty($devices)) {
             return \array_keys(Config::instance()->devices);
         }
@@ -51,66 +57,76 @@ abstract class AbstractUpdateCommand extends Command
         return ArrayUtil::wrap($devices);
     }
 
-    protected function _applyOptionsToFactory(InputInterface $input, UsageUpdateRequest $request) : void
+    protected function _applyOptions(RequestBuilder $builder, InputInterface $input) : void
     {
-        if ($input->getOption(self::OPTION_ALL)) {
-            $request->withAllIntervals();
-            $request->withAllPages();
+        $builder->withInterval(
+            IntervalFactory::instance()->get($input->getOption(self::OPTION_INTERVAL))
+        );
 
-            return;
+        if ($input->getOption(self::OPTION_ALL_PAGES)) {
+            $builder->withAllPages();
         }
-
-        $input->getOption(self::OPTION_INTERVAL_ALL)
-            ? $request->withAllIntervals()
-            : $request->withInterval($input->getOption(self::OPTION_INTERVAL));
-
-        $input->getOption(self::OPTION_PAGE_ALL)
-            ? $request->withAllPages()
-            : $request->withPageRange($input->getOption(self::OPTION_PAGE));
+        else {
+            $page = $input->getOption(self::OPTION_PAGE);
+            is_string($page)
+                ? $builder->withPageRange($page)
+                : $builder->withPage((int) $page);
+        }
     }
 
-    protected function _applyOptionsToRequest(InputInterface $input, UsageUpdateRequest $request) : void
+    protected function _request(Device $device, string $service) : void
     {
-        $request->withBatchSize($this->_batchSize);
-        $request->withSleep($this->_sleep);
-    }
+        $this->_output->writeln(\sprintf('Updating service `%s` of device `%s`', $service, $device->getName()));
 
-    protected function _request(InputInterface $input, DeviceInterface $device, string $service) : void
-    {
-        $requests = [];
+        $builder = new RequestBuilder($device, $service);
+        $this->_applyOptions($builder, $this->_input);
 
-        $servicePages = $device->getModel()->getServicePages($service);
-        foreach ($servicePages as $page => $range) {
-            for ($i = 1; $i <= $range; $i++) {
-                $requests[] = $device->createRequest(self::SERVICE_ENDPOINTS[ $service ])
-                    ->withQueryParam($page, $i)
-                    ->withResponseAs(UsageData::class);
-            }
-        }
-
+        $requests = $builder->createRequests();
         if (empty($requests)) {
             return;
         }
 
-        $batches = \array_chunk($requests, $this->_batchSize);
-        while (true) {
-            Curl::multi(...\array_shift($batches))
-                ->execute()
-                ->forEach([ $this, '_processRequest' ])
-                ->close();
+        if (1 === count($requests)) {
+            /** @var Request $request */
+            $request = $requests[0];
 
-            if (empty($batches)) {
-                break;
-            }
+            $this->_output->writeln(
+                \sprintf('executing... %s', $request->getUrl()),
+                OutputInterface::VERBOSITY_VERY_VERBOSE
+            );
 
-            \sleep($this->_sleep);
+            $this->_processRequest($request->execute());
+
+            return;
         }
+
+        $batches = \array_chunk($requests, $this->_batchSize);
+        print_r($batches);
+
+        // while (true) {
+        //     Curl::multi(...\array_shift($batches))
+        //         ->execute()
+        //         ->forEach(\Closure::fromCallable([ $this, '_processRequest' ]))
+        //         ->close();
+        //
+        //     if (empty($batches)) {
+        //         break;
+        //     }
+        //
+        //     \sleep($this->_sleep);
+        // }
     }
 
-    protected function _processRequest(RequestInterface $request) : void
+    protected function _processRequest(Request $request) : void
     {
+        $this->_output->writeln(
+            \sprintf('processing... %s', $request->getRawResponse()),
+            OutputInterface::VERBOSITY_DEBUG
+        );
+
+        /** @var Response $response */
         $response = $request->response();
-        (new UsageDataTransaction($response))->save();
+        (new Transaction($response))->commit();
     }
 
     protected function configure() : void
@@ -124,13 +140,8 @@ abstract class AbstractUpdateCommand extends Command
         $this->addOption(
             self::OPTION_INTERVAL, 'i',
             InputOption::VALUE_OPTIONAL,
-            'Which interval to update: min, 10min, hour or day'
-        );
-
-        $this->addOption(
-            self::OPTION_INTERVAL_ALL, 'I',
-            InputOption::VALUE_NONE,
-            'All intervals'
+            'Which interval to update: min, 10min, hour or day',
+            'min'
         );
 
         $this->addOption(
@@ -141,15 +152,9 @@ abstract class AbstractUpdateCommand extends Command
         );
 
         $this->addOption(
-            self::OPTION_PAGE_ALL, 'P',
+            self::OPTION_ALL_PAGES, 'P',
             InputOption::VALUE_NONE,
             'All pages'
-        );
-
-        $this->addOption(
-            self::OPTION_ALL, 'A',
-            InputOption::VALUE_NONE,
-            'All intervals and all pages'
         );
 
         $this->addOption(
@@ -175,6 +180,8 @@ abstract class AbstractUpdateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output) : void
     {
+        $this->_input = $input;
+        $this->_output = $output;
         $this->_batchSize = (int) $input->getOption(self::OPTION_BATCH);
         $this->_sleep = (int) $input->getOption(self::OPTION_SLEEP);
     }

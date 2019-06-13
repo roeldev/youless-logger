@@ -1,21 +1,20 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess\Database;
+namespace Casa\YouLess\Usage;
 
 use Casa\YouLess\Database;
 use Casa\YouLess\Exceptions\UnknownDelta;
-use Casa\YouLess\Response\UsageData;
 
-class UsageDataTransaction
+class Transaction
 {
     protected $_data;
 
-    public function __construct(UsageData $data)
+    public function __construct(Response $data)
     {
         $this->_data = $data;
     }
 
-    public function save()
+    public function commit()
     {
         $unit = \strtolower($this->_data->getUnit());
         $delta = $this->_data->getDelta();

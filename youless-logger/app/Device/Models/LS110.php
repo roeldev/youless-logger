@@ -2,13 +2,13 @@
 
 namespace Casa\YouLess\Device\Models;
 
-use Stellar\Common\Traits\ToString;
-use Stellar\Container\Traits\SingletonInstanceTrait;
+use Stellar\Common\Abilities\StringableTrait;
+use Stellar\Container\Abilities\SingletonInstanceTrait;
 
 final class LS110 implements ModelInterface
 {
     use SingletonInstanceTrait;
-    use ToString;
+    use StringableTrait;
 
     /** {@inheritDoc} */
     public function getServices() : array

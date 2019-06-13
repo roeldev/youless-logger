@@ -43,9 +43,7 @@ final class App extends Application implements SingletonInterface
         parent::__construct('Logger service for YouLess energy monitor', $this->_readVersion());
 
         $config = Config::instance();
-
         DeviceFactory::instance()->init($config->devices);
-        IntervalFactory::instance()->init();
 
         $this->addCommands([
             new DeviceCommand(),

@@ -4,10 +4,10 @@ namespace Casa\YouLess\Device;
 
 use Casa\YouLess\Database;
 use Casa\YouLess\Device\Models\ModelInterface;
+use Stellar\Common\Abilities\StringableTrait;
 use Stellar\Common\Contracts\ArrayableInterface;
 use Stellar\Common\Contracts\StringableInterface;
 use Stellar\Common\StringUtil;
-use Stellar\Common\Traits\ToString;
 use Stellar\Curl\Curl;
 use Stellar\Curl\Request\Request;
 use Stellar\Curl\Response\JsonResponse;
@@ -15,7 +15,7 @@ use Stellar\Exceptions\Common\MissingArgument;
 
 class Device implements ArrayableInterface, StringableInterface
 {
-    use ToString;
+    use StringableTrait;
 
     /** @var ?int */
     protected $_id;
@@ -137,6 +137,7 @@ class Device implements ArrayableInterface, StringableInterface
     public function getMac() : ?string
     {
         if (!$this->_mac) {
+            /** @var JsonResponse */
             $response = $this->createRequest('/d')
                 ->response(JsonResponse::class)
                 ->toArray();
