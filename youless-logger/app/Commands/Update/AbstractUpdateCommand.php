@@ -4,7 +4,7 @@ namespace Casa\YouLess\Commands\Update;
 
 use Casa\YouLess\Config;
 use Casa\YouLess\Device\Device;
-use Casa\YouLess\Interval\IntervalFactory;
+use Casa\YouLess\UsageData\IntervalFactory;
 use Casa\YouLess\UsageData\Update\RequestBuilder;
 use Casa\YouLess\UsageData\Update\Response;
 use Casa\YouLess\UsageData\Update\Transaction;

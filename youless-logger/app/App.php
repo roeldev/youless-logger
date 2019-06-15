@@ -11,7 +11,6 @@ use Casa\YouLess\Commands\Update\UpdateGasCommand;
 use Casa\YouLess\Commands\Update\UpdatePowerCommand;
 use Casa\YouLess\Commands\Update\UpdateS0Command;
 use Casa\YouLess\Device\DeviceFactory;
-use Casa\YouLess\Interval\IntervalFactory;
 use Stellar\Common\Contracts\SingletonInterface;
 use Stellar\Container\Registry;
 use Symfony\Component\Console\Application;

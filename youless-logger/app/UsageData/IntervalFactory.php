@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess\Interval;
+namespace Casa\YouLess\UsageData;
 
 use Casa\YouLess\Database;
 use Casa\YouLess\Exceptions\InvalidInterval;

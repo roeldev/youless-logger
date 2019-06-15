@@ -3,7 +3,7 @@
 namespace Casa\YouLess\UsageData\Update;
 
 use Casa\YouLess\Device\Device;
-use Casa\YouLess\Interval\Interval;
+use Casa\YouLess\UsageData\Interval;
 use Stellar\Common\StringUtil;
 
 final class RequestBuilder

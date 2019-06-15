@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess\Interval;
+namespace Casa\YouLess\UsageData;
 
 use Stellar\Common\Arrayify;
 use Stellar\Common\Contracts\ArrayableInterface;
