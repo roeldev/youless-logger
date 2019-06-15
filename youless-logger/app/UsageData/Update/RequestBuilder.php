@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess\Usage;
+namespace Casa\YouLess\UsageData\Update;
 
 use Casa\YouLess\Device\Device;
 use Casa\YouLess\Interval\Interval;

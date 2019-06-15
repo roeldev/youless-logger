@@ -5,9 +5,9 @@ namespace Casa\YouLess\Commands\Update;
 use Casa\YouLess\Config;
 use Casa\YouLess\Device\Device;
 use Casa\YouLess\Interval\IntervalFactory;
-use Casa\YouLess\Usage\RequestBuilder;
-use Casa\YouLess\Usage\Response;
-use Casa\YouLess\Usage\Transaction;
+use Casa\YouLess\UsageData\Update\RequestBuilder;
+use Casa\YouLess\UsageData\Update\Response;
+use Casa\YouLess\UsageData\Update\Transaction;
 use Stellar\Common\ArrayUtil;
 use Stellar\Curl\Request\Request;
 use Symfony\Component\Console\Command\Command;
@@ -126,7 +126,10 @@ abstract class AbstractUpdateCommand extends Command
 
         /** @var Response $response */
         $response = $request->response();
-        (new Transaction($response))->commit();
+
+        print_r($response);
+
+        // (new Transaction($response))->commit();
     }
 
     protected function configure() : void
