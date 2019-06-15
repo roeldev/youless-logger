@@ -29,21 +29,6 @@ final class DeviceFactory implements SingletonInterface
         return new LS120();
     }
 
-    protected function _requestService(string $name, array $config) : ServiceRequest
-    {
-        $record = $this->queryRecord('SELECT * FROM `devices` WHERE `ip` = ? OR `name` = ?', $config['ip'], $name);
-        $model = $this->_createModel();
-        $device = new Device($model, $name, $config, $record);
-
-        if ($device->isDirty()) {
-            $device->save();
-        }
-
-        return ServiceRequest::with($device)
-            ->asSingleton()
-            ->withAlias((string) $device->getId());
-    }
-
     public function __construct()
     {
         $this->_container = Registry::container(self::class);
@@ -56,10 +41,8 @@ final class DeviceFactory implements SingletonInterface
         }
 
         $this->_initialized = true;
-
-        $requestServiceFn = \Closure::fromCallable([ $this, '_requestService' ]);
         foreach ($devices as $name => $config) {
-            $this->_container->request($name, $requestServiceFn, $name, $config);
+            $this->_container->request($name, [ $this, 'requestService' ], [$name, $config]);
         }
     }
 
@@ -72,9 +55,22 @@ final class DeviceFactory implements SingletonInterface
             return $this->_container->get($name);
         }
         catch (NotFound $notFound) {
-            throw UnknownDevice::factory($name)
-                ->withPrevious($notFound)
-                ->create();
+            throw new UnknownDevice($name, $notFound);
         }
+    }
+
+    public function requestService(string $name, array $config) : ServiceRequest
+    {
+        $record = $this->queryRecord('SELECT * FROM `devices` WHERE `ip` = ? OR `name` = ?', $config['ip'], $name);
+        $model = $this->_createModel();
+        $device = new Device($model, $name, $config, $record);
+
+        if ($device->isDirty()) {
+            $device->save();
+        }
+
+        return ServiceRequest::with($device)
+            ->asSingleton()
+            ->withAlias((string) $device->getId());
     }
 }
