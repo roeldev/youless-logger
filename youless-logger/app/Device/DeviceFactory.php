@@ -4,12 +4,12 @@ namespace Casa\YouLess\Device;
 
 use Casa\YouLess\Database\QueryRecordTrait;
 use Casa\YouLess\Device\Models\LS120;
-use Casa\YouLess\Device\Models\ModelInterface;
+use Casa\YouLess\Device\Models\Model;
 use Casa\YouLess\Exceptions\UnknownDevice;
 use Stellar\Common\Contracts\SingletonInterface;
 use Stellar\Container\Abilities\SingletonInstanceTrait;
+use Stellar\Container\Exceptions\NotFoundException;
 use Stellar\Container\Container;
-use Stellar\Container\Exceptions\NotFound;
 use Stellar\Container\Registry;
 use Stellar\Container\ServiceRequest;
 
@@ -24,7 +24,7 @@ final class DeviceFactory implements SingletonInterface
     /** @var bool */
     protected $_initialized = false;
 
-    protected function _createModel() : ModelInterface
+    protected function _createModel() : Model
     {
         return new LS120();
     }
@@ -42,7 +42,7 @@ final class DeviceFactory implements SingletonInterface
 
         $this->_initialized = true;
         foreach ($devices as $name => $config) {
-            $this->_container->request($name, [ $this, 'requestService' ], [$name, $config]);
+            $this->_container->request($name, [ $this, 'requestService' ], [ $name, $config ]);
         }
     }
 
@@ -54,7 +54,7 @@ final class DeviceFactory implements SingletonInterface
         try {
             return $this->_container->get($name);
         }
-        catch (NotFound $notFound) {
+        catch (NotFoundException $notFound) {
             throw new UnknownDevice($name, $notFound);
         }
     }

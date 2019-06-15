@@ -2,38 +2,17 @@
 
 namespace Casa\YouLess\Device\Models;
 
-use Stellar\Common\Abilities\StringableTrait;
-use Stellar\Container\Abilities\SingletonInstanceTrait;
-
-final class LS110 implements ModelInterface
+final class LS110 extends Model
 {
-    use SingletonInstanceTrait;
-    use StringableTrait;
-
-    /** {@inheritDoc} */
-    public function getServices() : array
-    {
-        return [ 'power' ];
-    }
-
-    /** {@inheritDoc} */
-    public function getServicesPages() : array
-    {
-        return [
-            'power' => [
-                'h' => 2,
-                'w' => 3,
-                'd' => 7,
-                'm' => 12,
-            ],
-        ];
-    }
-
-    /** {@inheritDoc} */
-    public function getServicePages(string $service) : array
-    {
-        return $this->getServicesPages()[ $service ] ?? [];
-    }
+    // service => [ interval => pages ]
+    protected const SERVICES = [
+        'power' => [
+            'min' => 2,
+            '10min' => 3,
+            'hour' => 7,
+            'day' => 12,
+        ],
+    ];
 
     /** {@inheritDoc} */
     public function __toString() : string

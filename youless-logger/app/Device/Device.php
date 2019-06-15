@@ -4,7 +4,7 @@ namespace Casa\YouLess\Device;
 
 use Casa\YouLess\Contracts\UpdatableRecordInterface;
 use Casa\YouLess\Database;
-use Casa\YouLess\Device\Models\ModelInterface;
+use Casa\YouLess\Device\Models\Model;
 use Stellar\Common\Abilities\StringableTrait;
 use Stellar\Common\Contracts\ArrayableInterface;
 use Stellar\Common\Contracts\StringableInterface;
@@ -40,17 +40,24 @@ class Device implements ArrayableInterface, StringableInterface, UpdatableRecord
     /** @var array */
     protected $_record;
 
-    /** @var ModelInterface */
+    /** @var Model */
     protected $_model;
 
     /** @var array<string, array<string, int>> */
     protected $_services = [];
 
-    protected function _determineActiveServices(array $services) : array
+    protected function _setActiveServices(Model $model, ?array $services) : array
     {
-        $result = [];
+        if (null === $services) {
+            return $model->getServices();
+        }
 
-        $validServices = $this->_model->getServices();
+        if (empty($services)) {
+            return [];
+        }
+
+        $result = [];
+        $validServices = $model->getServices();
         foreach ($validServices as $service) {
             if (true === ($services[ $service ] ?? false) || \in_array($service, $services, true)) {
                 $result[] = $service;
@@ -60,7 +67,7 @@ class Device implements ArrayableInterface, StringableInterface, UpdatableRecord
         return $result;
     }
 
-    public function __construct(ModelInterface $model, string $name, array $config, array $record = [])
+    public function __construct(Model $model, string $name, array $config, array $record = [])
     {
         $ip = $config['ip'] ?? null;
         if (empty($ip) || !\is_string($ip)) {
@@ -73,14 +80,8 @@ class Device implements ArrayableInterface, StringableInterface, UpdatableRecord
         $this->_ip = $ip;
         $this->_password = $config['password'] ?? null;
         $this->_record = $record;
-
         $this->_model = $model;
-        if (!isset($config['services'])) {
-            $this->_services = $model->getServices();
-        }
-        else {
-            $this->_services = $this->_determineActiveServices($config['services']);
-        }
+        $this->_services = $this->_setActiveServices($model, $config['services'] ?? null);
     }
 
     public function getId() : ?int
@@ -103,7 +104,7 @@ class Device implements ArrayableInterface, StringableInterface, UpdatableRecord
         return $this->_ip;
     }
 
-    public function getModel() : ModelInterface
+    public function getModel() : Model
     {
         return $this->_model;
     }
