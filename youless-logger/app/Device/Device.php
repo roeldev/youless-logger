@@ -2,6 +2,7 @@
 
 namespace Casa\YouLess\Device;
 
+use Casa\YouLess\Contracts\UpdatableRecordInterface;
 use Casa\YouLess\Database;
 use Casa\YouLess\Device\Models\ModelInterface;
 use Stellar\Common\Abilities\StringableTrait;
@@ -12,8 +13,9 @@ use Stellar\Curl\Curl;
 use Stellar\Curl\Request\Request;
 use Stellar\Curl\Response\JsonResponse;
 use Stellar\Exceptions\Common\MissingArgument;
+use PDOStatement;
 
-class Device implements ArrayableInterface, StringableInterface
+class Device implements ArrayableInterface, StringableInterface, UpdatableRecordInterface
 {
     use StringableTrait;
 
@@ -58,39 +60,11 @@ class Device implements ArrayableInterface, StringableInterface
         return $result;
     }
 
-    protected function _createInsertStatement() : \PDOStatement
-    {
-        $statement = Database::instance()
-            ->prepare('INSERT INTO `devices` (`ip`, `name`, `created_at`) 
-                        VALUES (:ip, :name, :created_at)');
-
-        $statement->bindValue('ip', $this->_ip);
-        $statement->bindValue('name', $this->_name);
-        $statement->bindValue('created_at', \time());
-
-        return $statement;
-    }
-
-    protected function _createUpdateStatement() : \PDOStatement
-    {
-        $statement = Database::instance()
-            ->prepare('UPDATE `devices` 
-                        SET `ip` = :ip, `name` = :name, `updated_at` = :updated_at 
-                        WHERE `id` = :id ');
-
-        $statement->bindValue('id', $this->_id);
-        $statement->bindValue('ip', $this->_ip);
-        $statement->bindValue('name', $this->_name);
-        $statement->bindValue('updated_at', \time());
-
-        return $statement;
-    }
-
     public function __construct(ModelInterface $model, string $name, array $config, array $record = [])
     {
         $ip = $config['ip'] ?? null;
         if (empty($ip) || !\is_string($ip)) {
-            throw MissingArgument::factory(static::class, 'ip')->create();
+            throw new MissingArgument('__construct', static::class);
         }
 
         $this->_id = isset($record['id']) ? (int) $record['id'] : null;
@@ -137,10 +111,9 @@ class Device implements ArrayableInterface, StringableInterface
     public function getMac() : ?string
     {
         if (!$this->_mac) {
-            /** @var JsonResponse */
-            $response = $this->createRequest('/d')
-                ->response(JsonResponse::class)
-                ->toArray();
+            /** @var JsonResponse $response */
+            $response = $this->createRequest('/d')->response(JsonResponse::class);
+            $response = $response->toArray();
 
             $this->_mac = $response['mac'] ?? null;
         }
@@ -172,9 +145,37 @@ class Device implements ArrayableInterface, StringableInterface
             ->withQueryParam('f', 'j');
     }
 
+    public function createInsertStatement() : PDOStatement
+    {
+        $statement = Database::instance()
+            ->prepare('INSERT INTO `devices` (`ip`, `name`, `created_at`) 
+                        VALUES (:ip, :name, :created_at)');
+
+        $statement->bindValue('ip', $this->_ip);
+        $statement->bindValue('name', $this->_name);
+        $statement->bindValue('created_at', \time());
+
+        return $statement;
+    }
+
+    public function createUpdateStatement() : PDOStatement
+    {
+        $statement = Database::instance()
+            ->prepare('UPDATE `devices` 
+                        SET `ip` = :ip, `name` = :name, `updated_at` = :updated_at 
+                        WHERE `id` = :id ');
+
+        $statement->bindValue('id', $this->_id);
+        $statement->bindValue('ip', $this->_ip);
+        $statement->bindValue('name', $this->_name);
+        $statement->bindValue('updated_at', \time());
+
+        return $statement;
+    }
+
     public function save() : void
     {
-        $createUpdateStatement = empty($this->_id) ? $this->_createInsertStatement() : $this->_createUpdateStatement();
+        $createUpdateStatement = empty($this->_id) ? $this->createInsertStatement() : $this->createUpdateStatement();
         $createUpdateStatement->execute();
 
         $syncStatement = Database::instance()
