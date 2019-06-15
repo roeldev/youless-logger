@@ -6,20 +6,16 @@ CREATE TABLE devices(
     updated_at DATETIME
 );
 
-CREATE TABLE categories(
-    id INTEGER PRIMARY KEY,
-    device_id VARCHAR NOT NULL,
-    service VARCHAR(5) NOT NULL,
-    name VARCHAR,
-    created_at DATETIME NOT NULL,
-    updated_at DATETIME,
-    UNIQUE(device_id, service)
-);
-
 CREATE TABLE intervals(
     id INTEGER PRIMARY KEY,
-    name CHAR(1) NOT NULL UNIQUE,
-    alias VARCHAR(5) NOT NULL UNIQUE
+    parameter CHAR(1) NOT NULL UNIQUE,
+    name VARCHAR(5) NOT NULL UNIQUE
+);
+
+CREATE TABLE services(
+    id INTEGER PRIMARY KEY,
+    endpoint CHAR(1) NOT NULL UNIQUE,
+    name VARCHAR(5) NOT NULL UNIQUE
 );
 
 CREATE TABLE units(
@@ -29,11 +25,12 @@ CREATE TABLE units(
 
 CREATE TABLE data(
    timestamp INT NOT NULL,
-   category_id INT NOT NULL,
+   device_id INT NOT NULL,
+   service_id INT NOT NULL,
    interval_id INT(1) NOT NULL,
    value INT NOT NULL,
    unit_id INT(1) NOT NULL,
-   PRIMARY KEY(timestamp, category_id, interval_id)
+   PRIMARY KEY(timestamp, device_id, service_id, interval_id)
 ) WITHOUT ROWID;
 
 INSERT INTO intervals VALUES
@@ -41,6 +38,11 @@ INSERT INTO intervals VALUES
     ( 2, 'w', '10min' ),
     ( 3, 'd', 'hour' ),
     ( 4, 'm', 'day' );
+
+INSERT INTO services VALUES
+    ( 1, 'V', 'power' ),
+    ( 2, 'W', 'gas' ),
+    ( 3, 'Z', 's0' );
 
 INSERT INTO units VALUES
     ( 1, 'watt' ),

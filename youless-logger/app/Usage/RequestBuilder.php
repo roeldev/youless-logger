@@ -83,9 +83,9 @@ final class RequestBuilder
         $result = [];
 
         $endpoint = self::SERVICE_ENDPOINTS[ $this->_service ];
-        $intervalName = $this->_interval->getName();
+        $intervalParam = $this->_interval->getParameter();
         $servicePages = $this->_device->getModel()->getServicePages($this->_service);
-        $servicePages = $servicePages[ $intervalName ];
+        $servicePages = $servicePages[ $intervalParam ];
 
         if ($this->_allPages) {
             $pages = range(1, $servicePages);
@@ -96,7 +96,7 @@ final class RequestBuilder
 
         foreach ($pages as $page) {
             $result[] = $this->_device->createRequest($endpoint)
-                ->withQueryParam($intervalName, (string) $page)
+                ->withQueryParam($intervalParam, (string) $page)
                 ->withResponseAs(Response::class);
         }
 

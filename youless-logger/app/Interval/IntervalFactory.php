@@ -17,27 +17,15 @@ final class IntervalFactory
     /** @var Container */
     protected $_container;
 
-    protected function _requestService(string $name) : ServiceRequest
+    protected function _getRecord(string $name) : array
     {
         $query = Database::instance()
-            ->query('SELECT * FROM `intervals` WHERE `name` = ? OR `alias` = ?', \PDO::FETCH_ASSOC);
+            ->query('SELECT * FROM `intervals` WHERE `name` = ? OR `parameter` = ?', \PDO::FETCH_ASSOC);
 
         $query->execute([ $name, $name ]);
-        $record = $query->fetch();
+        $result = $query->fetch();
 
-        if (empty($record)) {
-            throw new InvalidInterval($name);
-        }
-
-        $interval = new Interval(
-            (int) $record['id'],
-            $record['name'],
-            $record['alias']
-        );
-
-        return ServiceRequest::with($interval)
-            ->asSingleton()
-            ->withAlias($interval->getAlias());
+        return \is_array($result) ? $result : [];
     }
 
     public function __construct()
@@ -49,10 +37,20 @@ final class IntervalFactory
     {
         $name = StringUtil::unprefix($name, '=');
 
-        return $this->_container->request(
-            $name,
-            \Closure::fromCallable([ $this, '_requestService' ]),
-            $name
-        );
+        return $this->_container->request($name, [ $this, 'requestService' ], [ $name ]);
+    }
+
+    public function requestService(string $name) : ServiceRequest
+    {
+        $record = $this->_getRecord($name);
+        if (empty($record)) {
+            throw new InvalidInterval($name);
+        }
+
+        $interval = new Interval($record);
+
+        return ServiceRequest::with($interval)
+            ->asSingleton()
+            ->withAlias($interval->getParameter());
     }
 }

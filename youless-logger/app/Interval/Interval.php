@@ -11,13 +11,13 @@ final class Interval implements ArrayableInterface
 
     protected $_name;
 
-    protected $_alias;
+    protected $_parameter;
 
-    public function __construct(int $id, string $name, string $alias)
+    public function __construct(array $record)
     {
-        $this->_id = $id;
-        $this->_name = $name;
-        $this->_alias = $alias;
+        $this->_id = (int) $record['id'];
+        $this->_name = $record['name'];
+        $this->_parameter = $record['parameter'];
     }
 
     public function getId() : int
@@ -30,9 +30,9 @@ final class Interval implements ArrayableInterface
         return $this->_name;
     }
 
-    public function getAlias() : string
+    public function getParameter() : string
     {
-        return $this->_alias;
+        return $this->_parameter;
     }
 
     public function toArray() : array
