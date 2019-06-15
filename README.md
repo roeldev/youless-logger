@@ -93,16 +93,19 @@ A new SQLite database is created on first run. All data values are stored in the
 
 
 ### Intervals
-| Id | Interval | API equiv. | Unit (power/s0) | Unit (gas) |
-|----|-----------|------------|-----------------|------------|
-| 1 | minute | h | watt | n/a
-| 2 | 10 mins | w | watt | liter
-| 3 | hour | d | watt | liter
-| 4 | day | m | kWh | m3 (cubic meter)
+| Id | Interval | API equiv. | LS110 history* | LS120 history* | Unit (power/s0) | Unit (gas) |
+|----|----------|------------|----------------|----------------|-----------------|------------|
+| 1 | minute | h | 1 hour (2x30) | 10 hours (20x30) | watt | n/a
+| 2 | 10 mins | w | 24 hours (3x48) | 10 days (30x48) | watt | liter
+| 3 | hour | d | 7 days (7x24) | 70 days (70x24) | watt | liter
+| 4 | day | m | 1 year (12x31) | 1 year (12x31) | kWh | m3 (cubic meter)
+
+* = max. history (amount of pages x data entries)
+
 
 ### Units
 | Id | Unit | API equiv. | Service |
-|----|------|------------|------|
+|----|------|------------|---------|
 | 1 | watt | Watt | power/s0
 | 2 | kwh | kWh | power/s0
 | 3 | liter | l | gas
