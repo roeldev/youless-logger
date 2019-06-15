@@ -20,7 +20,8 @@ CREATE TABLE services(
 
 CREATE TABLE units(
     id INTEGER PRIMARY KEY,
-    name VARCHAR(5) NOT NULL UNIQUE
+    name VARCHAR(5) NOT NULL UNIQUE,
+    alias VARCHAR(5) NOT NULL UNIQUE
 );
 
 CREATE TABLE data(
@@ -45,7 +46,7 @@ INSERT INTO services VALUES
     ( 3, 'Z', 's0' );
 
 INSERT INTO units VALUES
-    ( 1, 'watt' ),
-    ( 2, 'kwh' ),
-    ( 3, 'liter' ),
-    ( 4, 'm3' );
+    ( 1, 'watt', 'watt' ),
+    ( 2, 'kwh', 'kwh' ),
+    ( 3, 'l', 'liter' ),
+    ( 4, 'm3', 'm3' );

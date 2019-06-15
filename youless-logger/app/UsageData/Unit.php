@@ -6,7 +6,7 @@ use Stellar\Common\Abilities\StringableTrait;
 use Stellar\Common\Contracts\ArrayableInterface;
 use Stellar\Common\Contracts\StringableInterface;
 
-final class Interval implements ArrayableInterface, StringableInterface
+final class Unit implements ArrayableInterface, StringableInterface
 {
     use StringableTrait;
 
@@ -14,13 +14,13 @@ final class Interval implements ArrayableInterface, StringableInterface
 
     private $_name;
 
-    private $_parameter;
+    private $_alias;
 
     public function __construct(array $record)
     {
         $this->_id = (int) $record['id'];
         $this->_name = $record['name'];
-        $this->_parameter = $record['parameter'];
+        $this->_alias = $record['alias'] ?? $record['name'];
     }
 
     public function getId() : int
@@ -33,9 +33,9 @@ final class Interval implements ArrayableInterface, StringableInterface
         return $this->_name;
     }
 
-    public function getParameter() : string
+    public function getAlias() : string
     {
-        return $this->_parameter;
+        return $this->_alias;
     }
 
     public function toArray() : array
@@ -43,12 +43,12 @@ final class Interval implements ArrayableInterface, StringableInterface
         return [
             'id' => $this->_id,
             'name' => $this->_name,
-            'parameter' => $this->_parameter,
+            'alias' => $this->_alias,
         ];
     }
 
     public function __toString() : string
     {
-        return $this->_name;
+        return $this->_alias;
     }
 }
