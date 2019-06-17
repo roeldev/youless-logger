@@ -1,7 +1,7 @@
 {
     "require": {
         "symfony/console": "^4.2",
-        "stellar/stellar": "~0.1"
+        "stellar/stellar": "~0.3@dev"
     },
     "minimum-stability": "stable",
     "autoload": {

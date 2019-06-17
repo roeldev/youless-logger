@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b2bdd1f4f91b6c37233547a0d78d8690",
+    "content-hash": "eab6a4de541f7e0b461066fd9f84a902",
     "packages": [
         {
             "name": "psr/container",
@@ -206,16 +206,16 @@
         },
         {
             "name": "stellar/stellar",
-            "version": "v0.2.0",
+            "version": "v0.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stellar-php/stellar.git",
-                "reference": "a688ea7483197fb187f40759ae3023704bd4247d"
+                "reference": "ef8a38a69519f1c72a3f4a72c5ab313b4226975c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stellar-php/stellar/zipball/a688ea7483197fb187f40759ae3023704bd4247d",
-                "reference": "a688ea7483197fb187f40759ae3023704bd4247d",
+                "url": "https://api.github.com/repos/stellar-php/stellar/zipball/ef8a38a69519f1c72a3f4a72c5ab313b4226975c",
+                "reference": "ef8a38a69519f1c72a3f4a72c5ab313b4226975c",
                 "shasum": ""
             },
             "require": {
@@ -258,20 +258,20 @@
                 "library",
                 "php"
             ],
-            "time": "2019-05-26T13:17:09+00:00"
+            "time": "2019-06-17T20:25:19+00:00"
         },
         {
             "name": "symfony/console",
-            "version": "v4.3.0",
+            "version": "v4.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "707b619d2c3bedf0224d56f95f77dabc60102305"
+                "reference": "d50bbeeb0e17e6dd4124ea391eff235e932cbf64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/707b619d2c3bedf0224d56f95f77dabc60102305",
-                "reference": "707b619d2c3bedf0224d56f95f77dabc60102305",
+                "url": "https://api.github.com/repos/symfony/console/zipball/d50bbeeb0e17e6dd4124ea391eff235e932cbf64",
+                "reference": "d50bbeeb0e17e6dd4124ea391eff235e932cbf64",
                 "shasum": ""
             },
             "require": {
@@ -333,7 +333,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2019-05-27T08:16:38+00:00"
+            "time": "2019-06-05T13:25:51+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -514,7 +514,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "stellar/stellar": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
