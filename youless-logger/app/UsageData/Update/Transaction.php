@@ -3,45 +3,67 @@
 namespace Casa\YouLess\UsageData\Update;
 
 use Casa\YouLess\Database;
+use Casa\YouLess\Device\Device;
 use Casa\YouLess\Exceptions\UnknownDelta;
+use Casa\YouLess\UsageData\Interval;
+use Casa\YouLess\UsageData\IntervalRegistry;
+use Casa\YouLess\UsageData\Service;
+use Casa\YouLess\UsageData\UnitRegistry;
+use Psr\Log\LoggerAwareTrait;
 
-class Transaction
+final class Transaction
 {
-    protected $_data;
+    use LoggerAwareTrait;
 
-    public function __construct(Response $data)
+    /** @var Database */
+    private $_db;
+
+    /** @var Device */
+    private $_device;
+
+    /** @var Service */
+    private $_service;
+
+    /** @var Interval */
+    private $_interval;
+
+    public function __construct(Database $db)
     {
-        $this->_data = $data;
+        $this->_db = $db;
     }
 
-    public function commit()
+    public function fromRequestBuilder(RequestBuilder $builder) : self
     {
-        $unit = \strtolower($this->_data->getUnit());
-        $delta = $this->_data->getDelta();
+        $this->_device = $builder->getDevice();
+        $this->_service = $builder->getService();
+        $this->_interval = $builder->getInterval();
 
-        if (null === $delta) {
-            throw UnknownDelta::factory($this->_data->getDeltaTime())->create();
-        }
+        return $this;
+    }
 
-        $pdo = Database::instance();
-        $pdo->beginTransaction();
+    public function commit(Response $response) : void
+    {
+        $unit = UnitRegistry::instance()->get($response->getUnit());
+        $values = $response->getValues();
 
-        $values = $this->_data->getValues();
+        $this->_db->beginTransaction();
+
         foreach ($values as $timestamp => $value) {
-            $query = $pdo->prepare('
-                INSERT OR IGNORE INTO `data`(`timestamp`, `delta`, `unit`, `value`, `date`)
-                VALUES(:timestamp, :delta, :unit, :value, :date)'
+            $query = $this->_db->prepare('
+                INSERT OR IGNORE INTO `data`(`timestamp`, `device_id`, `service_id`, `interval_id`, `value`, `unit_id`)
+                VALUES(:timestamp, :device_id, :service_id, :interval_id, :value, :unit_id)'
             );
 
             $query->execute([
                 ':timestamp' => $timestamp,
-                ':delta' => $delta,
-                ':unit' => $unit,
+                ':device_id' => $this->_device->getId(),
+                ':service_id' => $this->_service->getId(),
+                ':interval_id' => $this->_interval->getId(),
                 ':value' => $value,
-                ':date' => date('Y-m-d H:i:s', $timestamp),
+                ':unit_id' => $unit->getId(),
             ]);
         }
 
-        $pdo->commit();
+        $this->_db->commit();
     }
 }

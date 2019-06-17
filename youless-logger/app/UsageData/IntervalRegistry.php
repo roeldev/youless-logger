@@ -34,6 +34,12 @@ final class IntervalRegistry extends AbstractRegistry
         $interval = new Interval($record);
         $serviceRequest = ServiceRequest::with($interval)->asSingleton();
 
+        // $possibleAliases = [
+        //     $interval->getName(),
+        //     $interval->getParameter(),
+        //     $interval->getDeltaTime()
+        // ];
+
         if ($name === $interval->getName()) {
             $serviceRequest->withAlias($interval->getParameter());
         }

@@ -7,13 +7,6 @@ use Stellar\Curl\Response\JsonResponse;
 
 class Response extends JsonResponse
 {
-    public const DELTAS = [
-        60 => 'min',
-        600 => '10mins',
-        3600 => 'hour',
-        86400 => 'day',
-    ];
-
     /** @var string */
     protected $_unit;
 
@@ -62,11 +55,6 @@ class Response extends JsonResponse
     public function getStartTime() : int
     {
         return $this->_startTime;
-    }
-
-    public function getDelta() : ?string
-    {
-        return self::DELTAS[ $this->_deltaTime ] ?? null;
     }
 
     public function getDeltaTime() : int

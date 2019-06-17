@@ -10,6 +10,9 @@ final class UpdateGasCommand extends AbstractUpdateServiceCommand
     {
         parent::configure();
         $this->setDescription('Update gas usage data from YouLess device');
+
+        $intervalOption = $this->getDefinition()->getOption(self::OPTION_INTERVAL);
+        $intervalOption->setDefault('10min');
     }
 
     public function getServiceName() : string

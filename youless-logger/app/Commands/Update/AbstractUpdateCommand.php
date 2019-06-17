@@ -3,17 +3,21 @@
 namespace Casa\YouLess\Commands\Update;
 
 use Casa\YouLess\Config;
+use Casa\YouLess\Database;
 use Casa\YouLess\Device\Device;
-use Casa\YouLess\UsageData\IntervalFactory;
+use Casa\YouLess\UsageData\IntervalRegistry;
+use Casa\YouLess\UsageData\ServiceRegistry;
 use Casa\YouLess\UsageData\Update\RequestBuilder;
-use Casa\YouLess\UsageData\Update\Response;
 use Casa\YouLess\UsageData\Update\Transaction;
 use Stellar\Common\ArrayUtil;
+use Stellar\Common\StringUtil;
+use Stellar\Curl\Curl;
 use Stellar\Curl\Request\Request;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class AbstractUpdateCommand extends Command
@@ -38,6 +42,9 @@ abstract class AbstractUpdateCommand extends Command
     /** @var OutputInterface */
     protected $_output;
 
+    /** @var ConsoleLogger */
+    protected $_logger;
+
     /** @var int */
     protected $_batchSize;
 
@@ -46,6 +53,15 @@ abstract class AbstractUpdateCommand extends Command
 
     /** @var bool */
     protected $_replace = false;
+
+    protected function _cleanInputValue($input)
+    {
+        if (!is_string($input)) {
+            return $input;
+        }
+
+        return StringUtil::unprefix($input, '=');
+    }
 
     protected function _getDeviceNames() : array
     {
@@ -59,15 +75,14 @@ abstract class AbstractUpdateCommand extends Command
 
     protected function _applyOptions(RequestBuilder $builder, InputInterface $input) : void
     {
-        $builder->withInterval(
-            IntervalFactory::instance()->get($input->getOption(self::OPTION_INTERVAL))
-        );
+        $interval = $this->_cleanInputValue($input->getOption(self::OPTION_INTERVAL));
+        $builder->withInterval(IntervalRegistry::instance()->get($interval));
 
         if ($input->getOption(self::OPTION_ALL_PAGES)) {
             $builder->withAllPages();
         }
         else {
-            $page = $input->getOption(self::OPTION_PAGE);
+            $page = $this->_cleanInputValue($input->getOption(self::OPTION_PAGE));
             is_string($page)
                 ? $builder->withPageRange($page)
                 : $builder->withPage((int) $page);
@@ -78,7 +93,10 @@ abstract class AbstractUpdateCommand extends Command
     {
         $this->_output->writeln(\sprintf('Updating service `%s` of device `%s`', $service, $device->getName()));
 
+        $service = ServiceRegistry::instance()->get($service);
         $builder = new RequestBuilder($device, $service);
+        $builder->setLogger($this->_logger);
+
         $this->_applyOptions($builder, $this->_input);
 
         $requests = $builder->createRequests();
@@ -86,50 +104,40 @@ abstract class AbstractUpdateCommand extends Command
             return;
         }
 
+        $transaction = new Transaction(Database::instance());
+        $transaction->setLogger($this->_logger);
+        $transaction->fromRequestBuilder($builder);
+
         if (1 === count($requests)) {
             /** @var Request $request */
             $request = $requests[0];
 
-            $this->_output->writeln(
-                \sprintf('executing... %s', $request->getUrl()),
-                OutputInterface::VERBOSITY_VERY_VERBOSE
-            );
+            $this->_logger->notice(\sprintf('executing... %s', $request->getUrl()));
+            $request->execute();
 
-            $this->_processRequest($request->execute());
+            $this->_logger->debug(\sprintf('processing... %s', $request->getRawResponse()));
+            $transaction->commit($request->response());
 
             return;
         }
 
         $batches = \array_chunk($requests, $this->_batchSize);
-        print_r($batches);
+        while (!empty($batches)) {
+            $multi = Curl::multi(...\array_shift($batches))
+                ->withLogger($this->_logger)
+                ->withExecuteInterval()
+                ->execute();
 
-        // while (true) {
-        //     Curl::multi(...\array_shift($batches))
-        //         ->execute()
-        //         ->forEach(\Closure::fromCallable([ $this, '_processRequest' ]))
-        //         ->close();
-        //
-        //     if (empty($batches)) {
-        //         break;
-        //     }
-        //
-        //     \sleep($this->_sleep);
-        // }
-    }
+            $requests = $multi->getRequests();
+            foreach ($requests as $request) {
+                $this->_logger->debug(\sprintf('processing... %s', $request->getRawResponse()));
+                $transaction->commit($request->response());
+            }
 
-    protected function _processRequest(Request $request) : void
-    {
-        $this->_output->writeln(
-            \sprintf('processing... %s', $request->getRawResponse()),
-            OutputInterface::VERBOSITY_DEBUG
-        );
+            $multi->close();
 
-        /** @var Response $response */
-        $response = $request->response();
-
-        print_r($response);
-
-        // (new Transaction($response))->commit();
+            \sleep($this->_sleep);
+        }
     }
 
     protected function configure() : void
@@ -185,7 +193,9 @@ abstract class AbstractUpdateCommand extends Command
     {
         $this->_input = $input;
         $this->_output = $output;
-        $this->_batchSize = (int) $input->getOption(self::OPTION_BATCH);
-        $this->_sleep = (int) $input->getOption(self::OPTION_SLEEP);
+        $this->_logger = new ConsoleLogger($output);
+
+        $this->_batchSize = (int) $this->_cleanInputValue($input->getOption(self::OPTION_BATCH));
+        $this->_sleep = (int) $this->_cleanInputValue($input->getOption(self::OPTION_SLEEP));
     }
 }

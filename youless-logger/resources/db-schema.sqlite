@@ -9,7 +9,8 @@ CREATE TABLE devices(
 CREATE TABLE intervals(
     id INTEGER PRIMARY KEY,
     parameter CHAR(1) NOT NULL UNIQUE,
-    name VARCHAR(5) NOT NULL UNIQUE
+    name VARCHAR(5) NOT NULL UNIQUE,
+    delta INTEGER NOT NULL UNIQUE
 );
 
 CREATE TABLE services(
@@ -35,10 +36,10 @@ CREATE TABLE data(
 ) WITHOUT ROWID;
 
 INSERT INTO intervals VALUES
-    ( 1, 'h', 'min' ),
-    ( 2, 'w', '10min' ),
-    ( 3, 'd', 'hour' ),
-    ( 4, 'm', 'day' );
+    ( 1, 'h', 'min', 60 ),
+    ( 2, 'w', '10min', 600 ),
+    ( 3, 'd', 'hour', 3600 ),
+    ( 4, 'm', 'day', 86400 );
 
 INSERT INTO services VALUES
     ( 1, 'V', 'power' ),

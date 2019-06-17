@@ -10,11 +10,17 @@ final class Interval implements ArrayableInterface, StringableInterface
 {
     use StringableTrait;
 
+    /** @var int */
     private $_id;
 
+    /** @var string */
     private $_name;
 
+    /** @var string */
     private $_parameter;
+
+    /** @var int */
+    private $_delta;
 
     public function __construct(array $record)
     {
@@ -38,12 +44,18 @@ final class Interval implements ArrayableInterface, StringableInterface
         return $this->_parameter;
     }
 
+    public function getDeltaTime() : int
+    {
+        return $this->_delta;
+    }
+
     public function toArray() : array
     {
         return [
             'id' => $this->_id,
             'name' => $this->_name,
             'parameter' => $this->_parameter,
+            'delta' => $this->_delta,
         ];
     }
 
