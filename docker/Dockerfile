@@ -1,10 +1,10 @@
 # https://hub.docker.com/_/php
 FROM php:7.1-cli-alpine as builder
-ENV COMPOSER_ALLOW_SUPERUSER 1
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
-COPY docker/install-composer.sh /tmp/
-COPY youless/ /youless/
-WORKDIR /youless/
+COPY docker/php/install-composer.sh /tmp/
+COPY youless-logger/ /youless-logger/
+WORKDIR /youless-logger/
 
 RUN set -x && \
     # install composer
@@ -21,18 +21,36 @@ RUN set -x && \
 # https://hub.docker.com/_/php
 FROM php:7.1-cli-alpine
 
-COPY docker/youless.sh /usr/bin/youless
+ARG DOCKER_REPO
+ARG DOCKER_TAG
+ARG LABEL_BUILD_DATE
+ARG LABEL_VCS_REF
+LABEL maintainer="Roel Schut" \
+      description="Logger service for YouLess energy monitor" \
+      org.label-schema.name=${DOCKER_REPO} \
+      org.label-schema.version=${DOCKER_TAG} \
+      org.label-schema.build-date=${LABEL_BUILD_DATE} \
+      org.label-schema.vcs-ref=${LABEL_VCS_REF} \
+      org.label-schema.vcs-url="https://github.com/project-casa/youless-logger" \
+      org.label-schema.schema-version="1.0"
+
+ENV ENV="/etc/motd"
+COPY docker/motd /etc/motd.d/
+COPY docker/motd.sh /etc/motd
+COPY docker/yl.sh /usr/bin/yl
 
 RUN set -x && \
-    chmod +x /usr/bin/youless && \
+    chmod +x /usr/bin/yl && \
     apk add --no-cache \
         sqlite \
         supervisor
 
-COPY --from=builder /youless/ /youless/
 COPY docker/supervisord.conf /etc/supervisord.conf
+COPY docker/php/php.ini /usr/local/etc/php/php.ini
+COPY docker/php/conf.d/*.ini /usr/local/etc/php/conf.d/
+COPY --from=builder /youless-logger/ /youless-logger/
 
-WORKDIR /youless/
-VOLUME ["/youless/data/", "/youless/log/"]
+WORKDIR /youless-logger/
+VOLUME ["/youless-logger/config/", "/youless-logger/data/", "/youless-logger/log/"]
 
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]

@@ -1,0 +1,18 @@
+plugins:
+  editorconfig:
+    enabled: true
+    config:
+      editorconfig: .editorconfig
+
+#  phpcodesniffer:
+#    enabled: true
+#    config:
+#      standard: https://github.com/roeldev/phpcs-ruleset/blob/master/phpcs-ruleset.xml
+
+  phpmd:
+    enabled: true
+    config:
+      file_extensions: "php"
+
+  shellcheck:
+    enabled: true

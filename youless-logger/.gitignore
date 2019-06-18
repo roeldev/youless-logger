@@ -1,0 +1,6 @@
+config/config.php
+config/**/*.conf
+data/**/*.db
+vendor/
+.env
+version.txt
