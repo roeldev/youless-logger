@@ -1,13 +1,8 @@
 #!/bin/sh
 set -e
 
-if [[ ! -d /youless-logger/config/supervisord/ || \
-    `ls -1 /youless-logger/config/supervisord/*.conf 2>/dev/null | wc -l` -eq 0 ]]
-then
-    cp -avr \
-        /youless-logger/resources/supervisord-defaults/* \
-        /youless-logger/config/supervisord
-fi
+sh /youless-logger/bin/copy-configs.sh
+sh /youless-logger/bin/create-database.sh
 
 if [[ ! -f /youless-logger/vendor/autoload.php ]]
 then
@@ -15,14 +10,6 @@ then
     composer install \
         --no-suggest \
         --optimize-autoloader
-fi
-
-if [[ ! -f /youless-logger/data/youless-logger.db ]]
-then
-    echo Creating sqlite database, please wait...
-    sqlite3 -init \
-        /youless-logger/resources/db-schema.sqlite \
-        /youless-logger/data/youless-logger.db
 fi
 
 exec "$@"

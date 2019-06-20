@@ -53,4 +53,6 @@ COPY --from=builder /youless-logger/ /youless-logger/
 WORKDIR /youless-logger/
 VOLUME ["/youless-logger/config/", "/youless-logger/data/", "/youless-logger/log/"]
 
+COPY docker/docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]
