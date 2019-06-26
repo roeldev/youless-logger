@@ -1,0 +1,4 @@
+*/10    *   *   *   *   /usr/bin/yl update:power -vv
+3,33    *   *   *   *   /usr/bin/yl update --interval=10min -vv
+5       *   *   *   *   /usr/bin/yl update --interval=hour -vv
+10      0   *   *   *   /usr/bin/yl update --interval=day -vv

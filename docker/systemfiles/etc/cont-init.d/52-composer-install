@@ -1,0 +1,9 @@
+#!/usr/bin/with-contenv bash
+
+if [[ ! -f /yl/vendor/autoload.php ]]
+then
+    echo Installing composer packages, please wait...
+    composer install \
+        --no-suggest \
+        --optimize-autoloader
+fi
