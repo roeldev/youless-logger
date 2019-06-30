@@ -2,7 +2,6 @@
 
 namespace Casa\YouLess;
 
-use Casa\YouLess\Device\DeviceFactory;
 use Stellar\Common\Contracts\SingletonInterface;
 use Stellar\Container\Registry;
 
