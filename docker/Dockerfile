@@ -4,7 +4,7 @@ COPY project/ /project/
 WORKDIR /project/
 
 RUN set -x \
-    # install required php packages
+ # install required php packages
  && composer install \
         --no-dev \
         --no-progress \
@@ -21,7 +21,7 @@ RUN set -x \
         sqlite
 
 COPY --from=builder /project/ /yl/
-COPY docker/systemfiles/ /
+COPY docker/rootfs/ /
 
 RUN set -x \
  && chmod +x /usr/bin/yl
