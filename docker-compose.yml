@@ -10,9 +10,9 @@ services:
     env_file:
       - .docker.env
     volumes:
-      - ./youless-logger/config:/youless-logger/config/
-      - ./youless-logger/data:/youless-logger/data/
-      - ./youless-logger/log:/youless-logger/log/
+      - ./project/config:/yl/config/
+      - ./project/data:/yl/data/
+      - ./project/log:/yl/log/
 
   dev:
     image: roeldev/casa-youless-logger:local-dev
@@ -25,9 +25,9 @@ services:
     env_file:
       - .docker.env
     volumes:
-      - ./youless-logger:/youless-logger/
-      - ./youless-logger/config:/youless-logger/config/
-      - ./youless-logger/data:/youless-logger/data/
-      - ./youless-logger/log:/youless-logger/log/
+      - ./project:/yl/
+      - ./project/config:/yl/config/
+      - ./project/data:/yl/data/
+      - ./project/log:/yl/log/
       - ./.composer-cache:/root/.composer/
-      - ../../stellar-php/stellar:/youless-logger/vendor/stellar/stellar/
+      - ../../stellar-php/stellar:/yl/vendor/stellar/stellar/
