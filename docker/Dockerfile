@@ -1,5 +1,5 @@
 # build project, install composer dependecies
-FROM roeldev/php-composer:latest as builder
+FROM roeldev/php-composer:7.1-latest as builder
 COPY project/ /project/
 WORKDIR /project/
 
@@ -13,8 +13,7 @@ RUN set -x \
  && composer dumpautoload -o
 
 # actual image
-FROM roeldev/php-cli:latest
-LABEL description="Logger service for YouLess energy monitor"
+FROM roeldev/php-cli:7.1-latest
 
 RUN set -x \
  && mv /app /yl \
