@@ -1,7 +1,7 @@
 # build project, install composer dependecies
 FROM roeldev/php-composer:7.1-latest as builder
-COPY project/ /project/
-WORKDIR /project/
+COPY docker/project/ /yl/
+WORKDIR /yl/
 
 RUN set -x \
  # install required php packages
@@ -22,7 +22,7 @@ RUN set -x \
         php${PHP_VERSION}-pdo \
         php${PHP_VERSION}-pdo_sqlite
 
-COPY --from=builder /project/ /yl/
+COPY --from=builder /yl/ /yl/
 COPY docker/rootfs/ /
 
 RUN set -x \
