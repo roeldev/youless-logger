@@ -1,6 +1,6 @@
 # build project, install composer dependecies
 FROM roeldev/php-composer:7.1-latest as builder
-COPY docker/project/ /yl/
+COPY project/ /yl/
 WORKDIR /yl/
 
 RUN set -x \
