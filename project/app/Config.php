@@ -12,6 +12,8 @@ use Stellar\Container\Registry;
  */
 final class Config implements SingletonInterface
 {
+    public const PROJECT_DIR = '/yl';
+
     /**
      * @return static
      */
@@ -50,6 +52,6 @@ final class Config implements SingletonInterface
 
     public function __construct()
     {
-        $this->_config = include '/youless-logger/config/config.php';
+        $this->_config = include self::PROJECT_DIR.'/config/config.php';
     }
 }
