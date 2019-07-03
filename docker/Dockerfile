@@ -14,11 +14,13 @@ RUN set -x \
 
 # actual image
 FROM roeldev/php-cli:7.1-latest
+ARG PHP_VERSION="7.1"
 
 RUN set -x \
- && mv /app /yl \
  && apk add --no-cache \
-        sqlite
+        sqlite \
+        php${PHP_VERSION}-pdo \
+        php${PHP_VERSION}-pdo_sqlite
 
 COPY --from=builder /project/ /yl/
 COPY docker/rootfs/ /
