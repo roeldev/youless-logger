@@ -1,4 +1,8 @@
 #!/usr/bin/with-contenv bash
 
 echo Starting cron...
-exec /usr/sbin/crond -f -S -l 5 -c /etc/crontabs
+
+crond -f \
+    -c /etc/crontabs/ \
+    -l ${CRON_LOG_LEVEL} \
+    -L "${CRON_LOG_FILE}"

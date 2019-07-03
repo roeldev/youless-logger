@@ -26,7 +26,7 @@ COPY --from=builder /project/ /yl/
 COPY docker/rootfs/ /
 
 RUN set -x \
- && chmod +x /usr/bin/yl
+ && chmod a+x /usr/bin/yl
 
 WORKDIR /yl/
 VOLUME ["/yl/config/", "/yl/data/", "/yl/log/"]

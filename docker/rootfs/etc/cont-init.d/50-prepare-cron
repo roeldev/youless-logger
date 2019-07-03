@@ -5,10 +5,10 @@ then
     cp /yl/resources/default-crontab /yl/config/crontab
 fi
 
-if [[ ! -f /etc/crontabs/youless-logger ]]
+if [[ ! -f /etc/crontabs/abc ]]
 then
-    ln -s /yl/config/crontab /etc/crontabs/youless-logger
-    chmod 0644 \
-        /etc/crontabs/youless-logger \
-        /yl/config/crontab
+    cp /yl/config/crontab /etc/crontabs/abc
 fi
+
+mkdir -p "$( dirname "${CRON_LOG_FILE}" )"
+chmod -R 0644 /etc/crontabs/
