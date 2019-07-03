@@ -1,28 +1,9 @@
-ARG PRODUCTION_IMAGE=roeldev/casa-youless-logger:latest
+ARG PRODUCTION_IMAGE
+
+FROM roeldev/php-composer:7.1-latest as composer
+
 FROM ${PRODUCTION_IMAGE}
-ENV COMPOSER_ALLOW_SUPERUSER=1
-
-COPY docker/php/install-composer.sh /tmp/
-
-RUN set -x && \
-    # install composer
-    sh /tmp/install-composer.sh && \
-    # install xdebug dependencies
-    apk add --no-cache --virtual phpize-deps \
-        autoconf \
-        g++ \
-        make \
-        && \
-    # install xdebug
-    pecl install xdebug && \
-    docker-php-ext-enable xdebug && \
-    # cleanup
-    apk del phpize-deps && \
-    rm -rf /tmp/*
+COPY --from=composer /usr/local/bin/composer /usr/local/bin/composer
 
 ENV PATH=/root/.composer/vendor/bin:$PATH
-VOLUME ["/youless-logger/", "/root/.composer/"]
-
-COPY docker/docker-entrypoint.sh /
-ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["supervisord", "-c", "/etc/supervisord.conf"]
+VOLUME ["/yl/", "/root/.composer/"]
