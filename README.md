@@ -41,22 +41,24 @@ services:
   youless-logger-service:
     image: roeldev/casa-youless-logger:latest
     volumes:
-      - config:/youless-logger/config/
-      - data:/youless-logger/data/
-      - log:/youless-logger/log/
+      - config:/yl/config/
+      - data:/yl/data/
+      - log:/yl/log/
 ```
 
 
 ### Volumes
 | Path | Contains |
 |------|----------|
-|```/youless-logger/config```| Config files
-|```/youless-logger/data```| Database (backup) files
-|```/youless-logger/log```| Log files
+|```/yl/config```| Config files
+|```/yl/data```| Database (backup) files
+|```/yl/log```| Log files
 
 
 ## Configuration
-Support for multiple YouLess devices means a little more configuration. Altough it should be pretty self explanatory, most important stuff is mentioned in this chapter. But first, have a look at the _[sample config](youless-logger/config/config-example.php)_ for a quick overview of possibilities.
+Support for multiple YouLess devices means a little more configuration. Altough it should be pretty self explanatory,
+ most important stuff is mentioned in this chapter. But first, have a look at the _[sample config]
+ (yl/config/config-example.php)_ for a quick overview of possibilities.
 
 Each device should have at least an _ip_ option set so the logger can reach the device's API. All other values are not required. However this probably results in way too much useless data being saved. Therefore it's recommended to only enable the data service(s) that are actually monitored. and disables classic API support
 > **Note:** Latest YouLess devices support data from three different counters: power, gas and s0. Older versions only support power.
@@ -67,7 +69,7 @@ Below example adds two devices:
 
 ```
 'devices' => [
-    'house' => [
+    'main' => [
         'ip' => 'http://192.168.1.27',
         'password' => 'secret',
         'services' => [
@@ -76,7 +78,7 @@ Below example adds two devices:
             's0' => false,
         ]
     ],
-    'shed' => [
+    'attic' => [
         'ip' => 'http://192.168.1.32'
         'services' => [ 's0' ]
     ]

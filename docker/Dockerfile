@@ -1,6 +1,6 @@
 # build project, install composer dependecies
-FROM roeldev/php-composer:7.1-latest as builder
-COPY project/ /yl/
+FROM roeldev/php-composer:7.1-v1 as builder
+COPY yl/ /yl/
 WORKDIR /yl/
 
 RUN set -x \
@@ -13,7 +13,7 @@ RUN set -x \
  && composer dumpautoload -o
 
 # actual image
-FROM roeldev/php-cli:7.1-latest
+FROM roeldev/php-cli:7.1-v1
 ARG PHP_VERSION="7.1"
 
 RUN set -x \

@@ -33,7 +33,7 @@ goto:eof
 
 
 :start
-docker-compose up -d %target%
+docker-compose up %target%
 goto:eof
 
 
