@@ -1,7 +1,7 @@
 # build project, install composer dependecies
 FROM roeldev/php-composer:7.1-v1 as builder
-COPY yl/ /yl/
-WORKDIR /yl/
+COPY app/ /app/
+WORKDIR /app/
 
 RUN set -x \
  # install required php packages
@@ -13,7 +13,7 @@ RUN set -x \
  && composer dumpautoload -o
 
 # actual image
-FROM roeldev/php-cli:7.1-v1
+FROM roeldev/php-nginx:7.1-v1
 ARG PHP_VERSION="7.1"
 
 RUN set -x \
@@ -22,11 +22,11 @@ RUN set -x \
         php${PHP_VERSION}-pdo \
         php${PHP_VERSION}-pdo_sqlite
 
-COPY --from=builder /yl/ /yl/
-COPY docker/rootfs/ /
+COPY --from=builder /app/ /app2/
+COPY rootfs/ /
 
 RUN set -x \
  && chmod a+x /usr/bin/yl
 
-WORKDIR /yl/
-VOLUME ["/yl/config/", "/yl/data/", "/yl/log/"]
+WORKDIR /app/
+VOLUME ["/app/config/", "/app/data/", "/app/log/"]

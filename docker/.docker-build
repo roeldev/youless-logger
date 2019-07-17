@@ -1,3 +1,0 @@
-MAINTAINER=roeldev
-GITHUB_REPO=project-casa/youless-logger
-BUILD_CONTEXT=../

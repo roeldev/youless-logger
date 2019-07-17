@@ -17,7 +17,7 @@ use Symfony\Component\Console\Application;
 
 final class App extends Application implements SingletonInterface
 {
-    protected const VERSION_FILE = '/yl/version.txt';
+    protected const VERSION_FILE = '/app/version.txt';
 
     /**
      * @return static

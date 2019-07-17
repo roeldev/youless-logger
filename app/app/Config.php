@@ -12,7 +12,7 @@ use Stellar\Container\Registry;
  */
 final class Config implements SingletonInterface
 {
-    public const PROJECT_DIR = '/yl';
+    public const PROJECT_DIR = '/app';
 
     /**
      * @return static

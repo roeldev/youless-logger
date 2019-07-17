@@ -1,9 +1,0 @@
-#!/usr/bin/with-contenv bash
-
-if [[ ! -f /yl/data/youless-logger.db ]]
-then
-    echo Creating sqlite database, please wait...
-    sqlite3 -init \
-        /yl/resources/db-schema.sqlite \
-        /yl/data/youless-logger.db
-fi

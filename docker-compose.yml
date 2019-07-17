@@ -6,28 +6,28 @@ services:
     container_name: casa-youless-logger_prod
     build:
       context: .
-      dockerfile: ./docker/Dockerfile
+      dockerfile: Dockerfile
     env_file:
       - .docker.env
     volumes:
-      - ./project/config:/yl/config/
-      - ./project/data:/yl/data/
-      - ./project/log:/yl/log/
+      - ./app/config:/app/config/
+      - ./app/data:/app/data/
+      - ./app/log:/app/log/
 
   dev:
     image: roeldev/casa-youless-logger:local-dev
     container_name: casa-youless-logger_dev
     build:
       context: .
-      dockerfile: ./docker/Dockerfile.dev
+      dockerfile: Dockerfile.dev
       args:
         PRODUCTION_IMAGE: roeldev/casa-youless-logger:local-prod
     env_file:
       - .docker.env
     volumes:
-      - ./project:/yl/
-      - ./project/config:/yl/config/
-      - ./project/data:/yl/data/
-      - ./project/log:/yl/log/
+      - ./app:/app/
+      - ./app/config:/app/config/
+      - ./app/data:/app/data/
+      - ./app/log:/app/log/
       - ./.composer-cache:/root/.composer/
-      - ../../stellar-php/stellar:/yl/vendor/stellar/stellar/
+      - ../../stellar-php/stellar:/app/vendor/stellar/stellar/

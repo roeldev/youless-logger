@@ -1,13 +1,13 @@
 #!/usr/bin/with-contenv bash
 
-if [[ ! -f /yl/config/crontab ]]
+if [[ ! -f /app/config/crontab ]]
 then
-    cp /yl/resources/default-crontab /yl/config/crontab
+    cp /app/resources/default-crontab /app/config/crontab
 fi
 
 if [[ ! -f /etc/crontabs/abc ]]
 then
-    cp /yl/config/crontab /etc/crontabs/abc
+    cp /app/config/crontab /etc/crontabs/abc
 fi
 
 mkdir -p "$( dirname "${CRON_LOG_FILE}" )"

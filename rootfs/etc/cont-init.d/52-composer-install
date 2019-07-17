@@ -1,6 +1,6 @@
 #!/usr/bin/with-contenv bash
 
-if [[ ! -f /yl/vendor/autoload.php ]]
+if [[ ! -f /app/vendor/autoload.php ]]
 then
     echo Installing composer packages, please wait...
     composer install \
