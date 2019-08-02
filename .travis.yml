@@ -1,0 +1,37 @@
+sudo: required
+dist: xenial
+language: minimal
+
+branches:
+  only:
+    - /^v.*$/
+    - develop
+
+services:
+  - docker
+
+env:
+  global:
+    - MAINTAINER=roeldev
+    - GITHUB_REPO=project-casa/youless-logger
+    - DOCKER_REPO=roeldev/casa-youless-logger
+
+before_script:
+  - git clone git://github.com/roeldev/travis-ci-scripts.git
+  - chmod ugo+x travis-ci-scripts/docker-build.sh
+
+script:
+  - travis-ci-scripts/docker-build.sh
+
+before_deploy:
+  - docker login -u "$DOCKER_USER" -p "$DOCKER_PASS"
+
+deploy:
+  - provider: script
+    script: docker push $DOCKER_REPO
+    on:
+      tags: true
+  - provider: script
+    script: docker push $DOCKER_REPO
+    on:
+      all_branches: true
