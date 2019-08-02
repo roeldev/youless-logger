@@ -48,7 +48,7 @@ if "%target%" == "" (
     set target=%DEFAULT_TARGET%
 )
 
-docker exec -it casa-youless-logger_%target% sh
+docker exec -it casa-youless-logger_%target% bash
 goto:eof
 
 
