@@ -1,4 +1,4 @@
-.composer-cache/
+.docker-volumes/*/*
 .idea/
 .docker.env
 **/*.log
