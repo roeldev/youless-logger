@@ -1,9 +1,9 @@
-ARG PRODUCTION_IMAGE
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
-FROM roeldev/php-composer:7.1-latest as composer
-
-FROM ${PRODUCTION_IMAGE}
-COPY --from=composer /usr/local/bin/composer /usr/local/bin/composer
+RUN set -x \
+ && install_composer.sh \
+ && install_xdebug.sh
 
 ENV PATH=/root/.composer/vendor/bin:$PATH
-VOLUME ["/yl/", "/root/.composer/"]
+VOLUME ["/app/", "/root/.composer/"]

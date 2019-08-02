@@ -1,6 +1,12 @@
-version: '3'
+version: '3.4'
 
 services:
+  travis:
+    image: roeldev/casa-youless-logger:${IMAGE_TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile
+
   prod:
     image: roeldev/casa-youless-logger:local-prod
     container_name: casa-youless-logger_prod
@@ -10,9 +16,9 @@ services:
     env_file:
       - .docker.env
     volumes:
-      - ./app/config:/app/config/
-      - ./app/data:/app/data/
-      - ./app/log:/app/log/
+      - ./.docker-volumes/config:/app/config/
+      - ./.docker-volumes/data:/app/data/
+      - ./.docker-volumes/log:/app/log/
 
   dev:
     image: roeldev/casa-youless-logger:local-dev
@@ -21,13 +27,13 @@ services:
       context: .
       dockerfile: Dockerfile.dev
       args:
-        PRODUCTION_IMAGE: roeldev/casa-youless-logger:local-prod
+        BASE_IMAGE: roeldev/casa-youless-logger:local-prod
     env_file:
       - .docker.env
     volumes:
       - ./app:/app/
-      - ./app/config:/app/config/
-      - ./app/data:/app/data/
-      - ./app/log:/app/log/
-      - ./.composer-cache:/root/.composer/
-      - ../../stellar-php/stellar:/app/vendor/stellar/stellar/
+      - ./.docker-volumes/config:/app/config/
+      - ./.docker-volumes/data:/app/data/
+      - ./.docker-volumes/log:/app/log/
+      - ./.docker-volumes/composer:/root/.composer/
+#      - ../../stellar-php/stellar:/app/vendor/stellar/stellar/
