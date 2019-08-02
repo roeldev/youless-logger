@@ -1,7 +1,0 @@
-config/config.php
-config/**/*.conf
-config/crontab
-data/**/*.db
-vendor/
-.env
-version.txt
