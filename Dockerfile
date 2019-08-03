@@ -15,7 +15,7 @@ RUN set -x \
 
 # actual image
 ARG PHP_VERSION="7.3"
-FROM roeldev/php-nginx:${PHP_VERSION}-v1.0
+FROM roeldev/php-nginx:${PHP_VERSION}-v1.1
 
 ARG PHP_VERSION="7.3"
 RUN set -x \
