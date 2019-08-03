@@ -1,6 +1,15 @@
 #!/usr/bin/with-contenv bash
 
-echo Starting cron...
+if ${VERBOSE_INIT}
+then
+    echo
+    echo "Starting cron..."
+    echo "CRON_LOG_LEVEL: ${CRON_LOG_LEVEL}"
+    echo "CRON_LOG_FILE:  ${CRON_LOG_FILE}"
+    echo
+else
+    echo "Starting cron..."
+fi
 
 crond -f \
     -c /etc/crontabs/ \
