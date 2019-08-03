@@ -7,4 +7,6 @@ if (!file_exists($autoloader)) {
 }
 
 require_once __DIR__ . '/vendor/autoload.php';
-(new Casa\YouLess\Console\App())->run();
+
+$app = new Casa\YouLess\Console\App();
+$app->run();

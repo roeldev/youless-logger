@@ -1,3 +1,3 @@
-<?php declare(strict_types=1);
+<?php
 
-echo \phpinfo();
+include __DIR__.'/../api_classic.php';
