@@ -2,7 +2,7 @@
 
 namespace Casa\YouLess\UsageData;
 
-use Casa\YouLess\Database;
+use Casa\YouLess\Database\Database;
 use Casa\YouLess\Exceptions\InvalidUnit;
 use Stellar\Container\ServiceRequest;
 

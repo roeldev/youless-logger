@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess\Commands\Device;
+namespace Casa\YouLess\Console\Commands\Device;
 
 use Casa\YouLess\Device\Device;
 use Casa\YouLess\Device\DeviceFactory;

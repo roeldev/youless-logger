@@ -2,11 +2,10 @@
 
 namespace Casa\YouLess\UsageData\Update;
 
-use Casa\YouLess\Database;
+use Casa\YouLess\Database\Database;
 use Casa\YouLess\Device\Device;
 use Casa\YouLess\Exceptions\UnknownDelta;
 use Casa\YouLess\UsageData\Interval;
-use Casa\YouLess\UsageData\IntervalRegistry;
 use Casa\YouLess\UsageData\Service;
 use Casa\YouLess\UsageData\UnitRegistry;
 use Psr\Log\LoggerAwareTrait;

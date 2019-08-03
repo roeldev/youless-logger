@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess\Commands\Update;
+namespace Casa\YouLess\Console\Commands\Update;
 
 use Casa\YouLess\Device\DeviceFactory;
 use Casa\YouLess\Request\Request;

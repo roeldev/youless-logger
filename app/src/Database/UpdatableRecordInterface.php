@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess\Contracts;
+namespace Casa\YouLess\Database;
 
 use PDOStatement;
 

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess;
+namespace Casa\YouLess\Boot;
 
 use Stellar\Common\Contracts\SingletonInterface;
 use Stellar\Container\Registry;

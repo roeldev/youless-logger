@@ -2,8 +2,8 @@
 
 namespace Casa\YouLess\Device;
 
-use Casa\YouLess\Contracts\UpdatableRecordInterface;
-use Casa\YouLess\Database;
+use Casa\YouLess\Database\Database;
+use Casa\YouLess\Database\UpdatableRecordInterface;
 use Casa\YouLess\Device\Models\Model;
 use Stellar\Common\Abilities\StringableTrait;
 use Stellar\Common\Contracts\ArrayableInterface;

@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess\Commands\Update;
+namespace Casa\YouLess\Console\Commands\Update;
 
-use Casa\YouLess\Config;
-use Casa\YouLess\Database;
+use Casa\YouLess\Boot\Config;
+use Casa\YouLess\Database\Database;
 use Casa\YouLess\Device\Device;
 use Casa\YouLess\UsageData\IntervalRegistry;
 use Casa\YouLess\UsageData\ServiceRegistry;

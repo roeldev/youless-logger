@@ -1,7 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace Casa\YouLess;
+namespace Casa\YouLess\Database;
 
+use Casa\YouLess\Boot\Config;
 use PDO;
 use Stellar\Common\Contracts\SingletonInterface;
 use Stellar\Container\Abilities\SingletonInstanceTrait;

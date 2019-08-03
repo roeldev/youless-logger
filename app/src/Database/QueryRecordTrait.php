@@ -2,8 +2,6 @@
 
 namespace Casa\YouLess\Database;
 
-use Casa\YouLess\Database;
-
 trait QueryRecordTrait
 {
     protected function queryRecord(string $statement, ...$args) : array
