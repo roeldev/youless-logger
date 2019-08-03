@@ -1,12 +1,14 @@
 {
-    "require": {
-        "symfony/console": "^4.2",
-        "stellar/stellar": "~0.3@dev"
-    },
-    "minimum-stability": "stable",
-    "autoload": {
-        "psr-4": {
-            "Casa\\YouLess\\": "src/"
-        }
+  "require": {
+    "stellar/stellar": "~0.3@dev",
+    "symfony/console": "^4.3",
+    "symfony/http-foundation": "^4.3",
+    "symfony/routing": "^4.3"
+  },
+  "minimum-stability": "stable",
+  "autoload": {
+    "psr-4": {
+      "Casa\\YouLess\\": "src/"
     }
+  }
 }
