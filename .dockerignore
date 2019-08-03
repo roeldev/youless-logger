@@ -1,3 +1,6 @@
-youless/vendor/
-youless/.env
-youless/.gitignore
+.git
+.gitattributes
+.github
+.gitignore
+**/.gitkeep
+app/vendor/
