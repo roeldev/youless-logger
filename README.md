@@ -41,31 +41,31 @@ services:
   youless-logger-service:
     image: roeldev/casa-youless-logger:latest
     volumes:
-      - config:/yl/config/
-      - data:/yl/data/
-      - log:/yl/log/
+      - ./config:/app/config/
+      - ./data:/app/data/
+      - ./log:/app/log/
 ```
 
 
 ### Volumes
 | Path | Contains |
 |------|----------|
-|```/yl/config```| Config files
-|```/yl/data```| Database (backup) files
-|```/yl/log```| Log files
+|```/app/config```| Config files
+|```/app/data```| Database (backup) files
+|```/app/log```| Log files
 
 
 ## Configuration
 Support for multiple YouLess devices means a little more configuration. Altough it should be pretty self explanatory,
  most important stuff is mentioned in this chapter. But first, have a look at the _[sample config]
- (yl/config/config-example.php)_ for a quick overview of possibilities.
+ (rootfs/etc/default-configs/config.php)_ for a quick overview of possibilities.
 
 Each device should have at least an _ip_ option set so the logger can reach the device's API. All other values are not required. However this probably results in way too much useless data being saved. Therefore it's recommended to only enable the data service(s) that are actually monitored. and disables classic API support
 > **Note:** Latest YouLess devices support data from three different counters: power, gas and s0. Older versions only support power.
 
 Below example adds two devices:
-1. _house_ which requires a password to access the API on _192.168.1.27_ and provides data of power and gas consumption;
-2. _shed_ which is hosted on _192.168.1.32_ and only provides data of the s0 pulse counter.
+1. _main_ which requires a password to access the API on _192.168.1.27_ and provides data of power and gas consumption;
+2. _attic_ which is hosted on _192.168.1.32_ and only provides data of the s0 pulse counter.
 
 ```
 'devices' => [
@@ -123,4 +123,4 @@ A new SQLite database is created on first run. All data values are stored in the
 
 
 ## License
-[GPL-2.0+](LICENSE) © 2019 [Roel Schut](https://roelschut.nl)
+[GPL-3.0+](LICENSE) © 2019 [Roel Schut](https://roelschut.nl)
