@@ -7,29 +7,33 @@ services:
       context: .
       dockerfile: Dockerfile
 
-  prod:
-    image: roeldev/casa-youless-logger:local-prod
-    container_name: casa-youless-logger_prod
+  local:
+    image: roeldev/casa-youless-logger:local
+    container_name: casa-youless-logger
     build:
       context: .
       dockerfile: Dockerfile
     env_file:
       - .docker.env
+    ports:
+      - "9080:80"
     volumes:
       - ./.docker-volumes/config:/app/config/
       - ./.docker-volumes/data:/app/data/
       - ./.docker-volumes/log:/app/log/
 
   dev:
-    image: roeldev/casa-youless-logger:local-dev
+    image: roeldev/casa-youless-logger:dev
     container_name: casa-youless-logger_dev
     build:
       context: .
       dockerfile: Dockerfile.dev
       args:
-        BASE_IMAGE: roeldev/casa-youless-logger:local-prod
+        BASE_IMAGE: roeldev/casa-youless-logger:local
     env_file:
       - .docker.env
+    ports:
+      - "9081:80"
     volumes:
       - ./app:/app/
       - ./.docker-volumes/config:/app/config/
