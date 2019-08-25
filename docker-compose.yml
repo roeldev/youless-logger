@@ -39,5 +39,5 @@ services:
       - ./.docker-volumes/config:/app/config/
       - ./.docker-volumes/data:/app/data/
       - ./.docker-volumes/log:/app/log/
-      - ./.docker-volumes/composer:/root/.composer/
+      - ./.docker-volumes/composer:/root/.composer/cache/
 #      - ../../stellar-php/stellar:/app/vendor/stellar/stellar/
