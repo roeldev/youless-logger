@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
-use Casa\YouLess\Api\Classic\GetDataAction;
-use Casa\YouLess\Api\Classic\GetDeviceInfoAction;
+ini_set('display_errors', '1');
+ini_set('error_reporting', (string) E_ALL);
 
 $autoloader = __DIR__ . '/vendor/autoload.php';
 if (!file_exists($autoloader)) {
@@ -11,8 +11,5 @@ if (!file_exists($autoloader)) {
 require_once __DIR__ . '/vendor/autoload.php';
 
 $app = new Casa\YouLess\Api\App();
-$app->addActions(
-    GetDataAction::class,
-    GetDeviceInfoAction::class
-);
+$app->addController(new Casa\YouLess\Api\ClassicApiController());
 $app->run();

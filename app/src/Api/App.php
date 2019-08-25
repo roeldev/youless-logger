@@ -3,8 +3,8 @@
 namespace Casa\YouLess\Api;
 
 use Casa\YouLess\Boot\Boot;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouteCollection;
@@ -13,6 +13,20 @@ final class App
 {
     /** @var RouteCollection */
     protected $_routes;
+
+    private function _handleAction(Request $request, ?callable $action) : Response
+    {
+        if (!$action) {
+            throw new InvalidRequest($request);
+        }
+
+        $response = \call_user_func($action, $request);
+        if ($response instanceof Response) {
+            return $response;
+        }
+
+        throw new UnexpectedActionResponse($response);
+    }
 
     public function __construct(RouteCollection $routes = null)
     {
@@ -34,6 +48,13 @@ final class App
         return $this;
     }
 
+    public function addController(ControllerInterface $controller) : self
+    {
+        $this->_routes->addCollection($controller->getRouteCollection());
+
+        return $this;
+    }
+
     public function run() : void
     {
         $request = Request::createFromGlobals();
@@ -44,22 +65,14 @@ final class App
             $match = (new UrlMatcher($this->_routes, $context))
                 ->match($request->getRequestUri());
 
-            $action = $match['_route'] ?? null;
-            if ($action && \is_a($action, ActionInterface::class, true)) {
-                $response = new JsonResponse();
-
-                /** @var ActionInterface $action */
-                $action = new $action();
-                $action->execute($request, $response);
-
-                $response->send();
-                exit;
-            }
+            $response = $this->_handleAction($request, $match['_action'] ?? null);
         }
         catch (\Exception $e) {
-            echo '<pre>';
-            print_r($e);
-            exit;
+            $response = new Response((string) $e, Response::HTTP_INTERNAL_SERVER_ERROR);
+            $response->headers->set('Content-Type', 'text/plain');
         }
+
+        $response->send();
+        exit;
     }
 }

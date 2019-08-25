@@ -76,7 +76,7 @@ class Device implements ArrayableInterface, StringableInterface, UpdatableRecord
 
         $this->_id = isset($record['id']) ? (int) $record['id'] : null;
         $this->_name = $name;
-        $this->_host = \sprintf('http://%s/', $ip);
+        $this->_host = \sprintf('http://%s', $ip);
         $this->_ip = $ip;
         $this->_password = $config['password'] ?? null;
         $this->_record = $record;
@@ -141,7 +141,7 @@ class Device implements ArrayableInterface, StringableInterface, UpdatableRecord
 
     public function createRequest(string $path) : Request
     {
-        return Curl::get($this->getHost() . StringUtil::unprefix($path, '/'))
+        return Curl::get($this->getHost() . StringUtil::prefix($path, '/'))
             ->throwExceptionOnFailure()
             ->withQueryParam('f', 'j');
     }

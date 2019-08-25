@@ -49,10 +49,10 @@ final class DeviceFactory implements SingletonInterface
     /**
      * @throws UnknownDevice
      */
-    public function get(string $name = 'default') : Device
+    public function get(string $name = 'default', ?string $aliasGroup = null) : Device
     {
         try {
-            return $this->_container->get($name);
+            return $this->_container->get($name, $aliasGroup);
         }
         catch (NotFoundException $notFound) {
             throw new UnknownDevice($name, $notFound);
@@ -71,6 +71,7 @@ final class DeviceFactory implements SingletonInterface
 
         return ServiceRequest::with($device)
             ->asSingleton()
-            ->withAlias((string) $device->getId());
+            ->withAlias((string) $device->getId(), 'id')
+            ->withAlias((string) $config['classic_api']['port'], 'port');
     }
 }
