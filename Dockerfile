@@ -1,6 +1,6 @@
 # build project, install composer dependecies
 ARG PHP_VERSION="7.3"
-FROM roeldev/php-composer:${PHP_VERSION}-v1.4 as builder
+FROM roeldev/php-composer:${PHP_VERSION}-v1.5 as builder
 COPY app/ /app/
 WORKDIR /app/
 
@@ -15,7 +15,7 @@ RUN set -x \
 
 # actual image
 ARG PHP_VERSION="7.3"
-FROM roeldev/php-nginx:${PHP_VERSION}-v1.1
+FROM roeldev/php-nginx:${PHP_VERSION}-v1.2
 
 ARG PHP_VERSION="7.3"
 RUN set -x \

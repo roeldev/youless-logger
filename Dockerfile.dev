@@ -6,4 +6,4 @@ RUN set -x \
  && install_xdebug.sh
 
 ENV PATH=/root/.composer/vendor/bin:$PATH
-VOLUME ["/app/", "/root/.composer/"]
+VOLUME ["/app/", "/root/.composer/cache/"]
