@@ -1,6 +1,6 @@
 {
   "require": {
-    "stellar/stellar": "~0.3@dev",
+    "stellar/stellar": "~0.4@dev",
     "symfony/console": "^4.3",
     "symfony/http-foundation": "^4.3",
     "symfony/routing": "^4.3"
