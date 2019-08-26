@@ -2,7 +2,7 @@
 
 namespace Casa\YouLess\Boot;
 
-use Casa\YouLess\Device\DeviceFactory;
+use Casa\YouLess\Device\DevicesContainer;
 use Stellar\Common\StaticClass;
 
 final class Boot extends StaticClass
@@ -14,7 +14,7 @@ final class Boot extends StaticClass
     {
         $config = Config::instance();
 
-        DeviceFactory::instance()
+        DevicesContainer::instance()
             ->init($config->devices);
     }
 }

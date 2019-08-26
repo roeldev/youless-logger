@@ -3,7 +3,7 @@
 namespace Casa\YouLess\Console\Commands\Device;
 
 use Casa\YouLess\Device\Device;
-use Casa\YouLess\Device\DeviceFactory;
+use Casa\YouLess\Device\DevicesContainer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,7 +12,7 @@ abstract class AbstractDeviceCommand extends Command
 {
     protected function _getDevice(InputInterface $input) : Device
     {
-        return DeviceFactory::instance()
+        return DevicesContainer::instance()
             ->get($input->getArgument('name'));
     }
 

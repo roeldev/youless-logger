@@ -2,7 +2,7 @@
 
 namespace Casa\YouLess\Console\Commands\Update;
 
-use Casa\YouLess\Device\DeviceFactory;
+use Casa\YouLess\Device\DevicesContainer;
 use Casa\YouLess\Request\Request;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -23,7 +23,7 @@ class UpdateCommand extends AbstractUpdateCommand
 
         $devices = $this->_getDeviceNames($input);
         foreach ($devices as $device) {
-            $device = DeviceFactory::instance()->get($device);
+            $device = DevicesContainer::instance()->get($device);
             $services = $device->getActiveServices();
             foreach ($services as $service) {
                 $this->_request($device, $service);

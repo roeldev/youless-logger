@@ -13,7 +13,7 @@ use Stellar\Container\Container;
 use Stellar\Container\Registry;
 use Stellar\Container\ServiceRequest;
 
-final class DeviceFactory implements SingletonInterface
+final class DevicesContainer implements SingletonInterface
 {
     use QueryRecordTrait;
     use SingletonInstanceTrait;

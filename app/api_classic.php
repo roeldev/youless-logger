@@ -11,5 +11,5 @@ if (!file_exists($autoloader)) {
 require_once __DIR__ . '/vendor/autoload.php';
 
 $app = new Casa\YouLess\Api\App();
-$app->addController(new Casa\YouLess\Api\ClassicApiController());
+$app->addController(new Casa\YouLess\Api\Classic\ApiController());
 $app->run();
