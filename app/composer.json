@@ -1,4 +1,15 @@
 {
+  "name": "project-casa/youless-logger",
+  "description": "Logger service for YouLess energy monitor",
+  "license": "GPL-3.0+",
+  "homepage": "https://github.com/project-casa/youless-logger",
+  "authors": [
+    {
+      "name": "Roel Schut",
+      "homepage": "https://roelschut.nl"
+    }
+  ],
+  "minimum-stability": "stable",
   "require": {
     "stellar/stellar": "~0.4@dev",
     "symfony/console": "^4.3",
