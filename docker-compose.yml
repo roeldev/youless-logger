@@ -5,18 +5,16 @@ services:
     image: roeldev/casa-youless-logger:${IMAGE_TAG}
     build:
       context: .
-      dockerfile: Dockerfile
+      args:
+        - VERSION=:${IMAGE_TAG}
 
   local:
     image: roeldev/casa-youless-logger:local
     container_name: casa-youless-logger
     build:
       context: .
-      dockerfile: Dockerfile
-    env_file:
-      - .docker.env
     ports:
-      - "9080:80"
+      - 9080:80
     volumes:
       - ./.docker-volumes/config:/app/config/
       - ./.docker-volumes/data:/app/data/
@@ -28,12 +26,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-      args:
-        BASE_IMAGE: roeldev/casa-youless-logger:local
-    env_file:
-      - .docker.env
+    environment:
+      - PGID=100
+      - PUID=1000
+      - CRON_LOG_LEVEL=8
+      - CRON_LOG_FILE=/dev/stdout
     ports:
-      - "9081:80"
+      - 9081:80
     volumes:
       - ./app:/app/
       - ./.docker-volumes/config:/app/config/

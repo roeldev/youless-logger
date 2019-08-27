@@ -1,6 +1,5 @@
 # build project, install composer dependecies
-ARG PHP_VERSION="7.3"
-FROM roeldev/php-composer:${PHP_VERSION}-v1.5 as builder
+FROM roeldev/php-composer:7.3-v1.5 as builder
 COPY app/ /app/
 WORKDIR /app/
 
@@ -13,19 +12,30 @@ RUN set -x \
         --no-interaction \
  && composer dumpautoload -o
 
-# actual image
-ARG PHP_VERSION="7.3"
-FROM roeldev/php-nginx:${PHP_VERSION}-v1.2
+###############################################################################
+# create actual image
+###############################################################################
+FROM roeldev/php-nginx:7.3-v1.2
 
-ARG PHP_VERSION="7.3"
+# expose environment variables
+ENV CRON_LOG_LEVEL=8 \
+    CRON_LOG_FILE=/app/log/cron.log
+
 RUN set -x \
- && apk add --no-cache \
+ && apk update \
+ && apk add \
+    --no-cache \
         sqlite \
-        php${PHP_VERSION}-pdo \
-        php${PHP_VERSION}-pdo_sqlite
+        php7.3-pdo \
+        php7.3-pdo_sqlite
 
 COPY --from=builder /app/ /app/
 COPY rootfs/ /
+COPY LICENSE /app/LICENSE
+
+ARG VERSION="dev"
+RUN set -x \
+ && echo "${VERSION}" >> /app/VERSION
 
 WORKDIR /app/
 VOLUME ["/app/config/", "/app/data/", "/app/log/"]

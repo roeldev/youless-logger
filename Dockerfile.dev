@@ -1,5 +1,4 @@
-ARG BASE_IMAGE
-FROM ${BASE_IMAGE}
+FROM roeldev/casa-youless-logger:local
 
 RUN set -x \
  && install_composer.sh \
