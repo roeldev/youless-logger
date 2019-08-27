@@ -37,12 +37,8 @@ final class UnitRegistry extends AbstractRegistry
         $serviceRequest = ServiceRequest::with($unit)->asSingleton();
 
         if ($unit->getName() !== $unit->getAlias()) {
-            if ($name === $unit->getName()) {
-                $serviceRequest->withAlias($unit->getAlias());
-            }
-            elseif ($name === $unit->getAlias()) {
-                $serviceRequest->withAlias($unit->getName());
-            }
+            $serviceRequest->withAlias($unit->getName(), 'name');
+            $serviceRequest->withAlias($unit->getAlias(), 'alias');
         }
 
         return $serviceRequest;

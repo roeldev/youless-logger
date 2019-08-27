@@ -16,10 +16,23 @@
     "symfony/http-foundation": "^4.3",
     "symfony/routing": "^4.3"
   },
-  "minimum-stability": "stable",
+  "require-dev": {
+    "codedungeon/phpunit-result-printer": "^0.19",
+    "fzaninotto/faker": "^1.8",
+    "nunomaduro/collision": "^2",
+    "phpunit/phpunit": "^7.3",
+    "phpunit/php-code-coverage": "^6.1",
+    "roeldev/phpcs-ruleset": "^1.1",
+    "symfony/var-dumper": "^4.3"
+},
   "autoload": {
     "psr-4": {
       "Casa\\YouLess\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "UnitTests\\": "tests/unit/"
     }
   }
 }
