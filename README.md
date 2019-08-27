@@ -32,18 +32,21 @@ Key features are:
 
 
 ## Installation
-```docker pull roeldev/casa-youless-logger```
+Setting up the service is pretty easy.
 
-
-### Docker-compose
 ```
 services:
   youless-logger-service:
     image: roeldev/casa-youless-logger:latest
+    ports:
+      - 80:80
     volumes:
       - ./config:/app/config/
       - ./data:/app/data/
       - ./log:/app/log/
+    environment:
+      - PGID=100
+      - PUID=1000
 ```
 
 
@@ -116,8 +119,8 @@ A new SQLite database is created on first run. All data values are stored in the
 
 
 ## Links
-- Github: https://github.com/project-casa/youless-logger
-- Docker hub: https://hub.docker.com/r/roeldev/casa-youless-logger
+- GitHub: https://github.com/project-casa/youless-logger
+- Docker Hub: https://hub.docker.com/r/roeldev/casa-youless-logger
 - YouLess: https://youless.nl
 - YouLess API info: http://wiki.td-er.nl/index.php?title=YouLess
 
