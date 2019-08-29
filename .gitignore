@@ -1,5 +1,4 @@
 .docker-volumes/*/*
 .idea/
-.docker.env
 **/*.log
 app/vendor/
