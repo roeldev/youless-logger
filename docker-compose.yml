@@ -16,7 +16,7 @@ services:
     ports:
       - 9080:80
     volumes:
-      - ./.docker-volumes/config:/app/config/
+      - ./.docker-volumes/config:/config/
       - ./.docker-volumes/data:/app/data/
       - ./.docker-volumes/log:/app/log/
 
@@ -35,8 +35,8 @@ services:
       - 9081:80
     volumes:
       - ./app:/app/
-      - ./.docker-volumes/config:/app/config/
+      - ./.docker-volumes/config:/config/
       - ./.docker-volumes/data:/app/data/
       - ./.docker-volumes/log:/app/log/
-      - ./.docker-volumes/composer:/root/.composer/cache/
+      - ./.docker-volumes/composer:/composer/cache/
 #      - ../../stellar-php/stellar:/app/vendor/stellar/stellar/

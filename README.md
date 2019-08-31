@@ -41,7 +41,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./config:/app/config/
+      - ./config:/config/
       - ./data:/app/data/
       - ./log:/app/log/
     environment:
@@ -53,7 +53,7 @@ services:
 ### Volumes
 | Path | Contains |
 |------|----------|
-|```/app/config```| Config files
+|```/config```| Config files
 |```/app/data```| Database (backup) files
 |```/app/log```| Log files
 

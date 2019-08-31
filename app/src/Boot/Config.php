@@ -52,6 +52,6 @@ final class Config implements SingletonInterface
 
     public function __construct()
     {
-        $this->_config = include self::PROJECT_DIR.'/config/config.php';
+        $this->_config = include '/config/config.php';
     }
 }

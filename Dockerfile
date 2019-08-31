@@ -38,4 +38,4 @@ RUN set -x \
  && echo "${VERSION}" >> /app/VERSION
 
 WORKDIR /app/
-VOLUME ["/app/config/", "/app/data/", "/app/log/"]
+VOLUME ["/app/data/", "/app/log/"]
