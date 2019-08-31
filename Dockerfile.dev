@@ -1,8 +1,14 @@
 FROM roeldev/casa-youless-logger:local
 
 RUN set -x \
- && install_composer.sh \
- && install_xdebug.sh
+ && apk add \
+        --no-cache \
+            git
 
-ENV PATH=/root/.composer/vendor/bin:$PATH
-VOLUME ["/app/", "/root/.composer/cache/"]
+RUN set -x && install_composer.sh
+RUN set -x && install_xdebug.sh
+
+ENV COMPOSER_ALLOW_SUPERUSER=1 \
+    PATH=/root/.composer/vendor/bin:/root/.symfony/bin:$PATH
+
+VOLUME ["/app/", "/composer/cache/"]

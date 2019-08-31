@@ -7,10 +7,13 @@ DEFAULT_PHP_VERSION=7.3
 
 it: build start-dev
 
-dev: build start-dev login-dev
+dev: build-dev start-dev
 
 build:
 	docker-compose build local
+	docker-compose build dev
+
+build-dev:
 	docker-compose build dev
 
 start:
