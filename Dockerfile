@@ -1,5 +1,5 @@
 # build project, install composer dependecies
-FROM roeldev/php-composer:7.3-v1.5 as builder
+FROM roeldev/php-composer:7.3-v1.6 as builder
 COPY app/ /app/
 WORKDIR /app/
 
@@ -15,7 +15,7 @@ RUN set -x \
 ###############################################################################
 # create actual image
 ###############################################################################
-FROM roeldev/php-nginx:7.3-v1.2
+FROM roeldev/php-nginx:7.3-v1.3
 
 # expose environment variables
 ENV CRON_LOG_LEVEL=8 \

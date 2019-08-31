@@ -42,7 +42,7 @@ login-dev:
 	docker exec -it ${CONTAINER_NAME}_dev bash
 
 renew:
-	docker pull roeldev/php-composer:${DEFAULT_PHP_VERSION}-v1.5
-	docker pull roeldev/php-nginx:${DEFAULT_PHP_VERSION}-v1.2
+	docker pull roeldev/php-composer:${DEFAULT_PHP_VERSION}-v1.6
+	docker pull roeldev/php-nginx:${DEFAULT_PHP_VERSION}-v1.3
 
 .PHONY it build start start-dev stop kill restart restart-dev inspect inspect-dev login login-dev renew:
