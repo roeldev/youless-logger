@@ -124,6 +124,9 @@ A new SQLite database is created on first run. All data values are stored in the
 - YouLess: https://youless.nl
 - YouLess API info: http://wiki.td-er.nl/index.php?title=YouLess
 
+### Build with
+<a href="https://www.jetbrains.com/?from=project-casa" target="_blank"><img src="https://d3nmt5vlzunoa1.cloudfront.net/phpstorm/files/2015/12/PhpStorm_400x400_Twitter_logo_white.png" width="35" /></a>
+<a href="https://www.jetbrains.com/?from=project-casa" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c9/DataGrip.svg" width="30" /></a>
 
 ## License
 [GPL-3.0+](LICENSE) © 2019 [Roel Schut](https://roelschut.nl)
