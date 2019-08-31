@@ -26,7 +26,6 @@ RUN set -x \
  && apk add \
     --no-cache \
         sqlite \
-        php7.3-pdo \
         php7.3-pdo_sqlite
 
 COPY --from=builder /app/ /app/
