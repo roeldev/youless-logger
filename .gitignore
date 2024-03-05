@@ -1,4 +1,7 @@
-.composer-cache/
-.idea/
-.docker.env
-**/*.log
+/.idea
+/vendor
+*.exe
+coverage.out
+go.work
+go.work.sum
+.env.local
