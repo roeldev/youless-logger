@@ -1,7 +1,8 @@
 /.idea
 /vendor
 *.exe
+.env.local
+.env.*.local
 coverage.out
 go.work
 go.work.sum
-.env.local
