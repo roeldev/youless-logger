@@ -88,7 +88,7 @@ func New(name string, conf Config, log zerolog.Logger, handler http.Handler, opt
 	if conf.AccessLog {
 		app.middleware = append(app.middleware, accesslog.Middleware(serverLogger))
 	}
-	if err = app.server.Apply(
+	if err = app.server.With(
 		conf.Port,
 		serv.DefaultConfig(),
 		serv.WithName(app.name),
