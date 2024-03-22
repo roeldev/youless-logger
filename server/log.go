@@ -41,7 +41,7 @@ func (l *logger) ServerClose(name string) {
 func (l *logger) Log(_ context.Context, det accesslog.Details, req *http.Request) {
 	var lvl zerolog.Level
 	switch true {
-	case det.HandlerName == RouteHealthCheck || det.HandlerName == RouteMetrics:
+	case det.HandlerName == HealthCheckRoute || det.HandlerName == PrometheusMetricsRoute:
 		lvl = zerolog.DebugLevel
 	case det.StatusCode >= 400:
 		lvl = zerolog.WarnLevel

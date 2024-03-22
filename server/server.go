@@ -15,21 +15,29 @@ import (
 	"github.com/go-pogo/serv/accesslog"
 	"github.com/go-pogo/serv/middleware"
 	"github.com/go-pogo/telemetry"
+	youlessclient "github.com/roeldev/youless-client"
 	"github.com/rs/zerolog"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"net/http"
 )
 
 const (
-	RouteBuildInfo   = buildinfo.MetricName
-	RouteHealthCheck = "healthcheck"
-	RouteMetrics     = "prometheus-metrics"
+	BuildInfoRoute         = buildinfo.MetricName
+	HealthCheckRoute       = "healthcheck"
+	PrometheusMetricsRoute = "prometheus-metrics"
+
+	ErrInvalidPrometheusPath errors.Msg = "invalid prometheus path"
+	ConfigValidationError               = youlessclient.ConfigValidationError
 )
 
 type Config struct {
 	Port      serv.Port `default:"2512"`
 	AccessLog bool      `default:"true"`
 	TLS       serv.TLSConfig
+}
+
+func (c Config) Validate() error {
+	return nil
 }
 
 type Server struct {
@@ -61,13 +69,13 @@ func New(name string, conf Config, log zerolog.Logger, handler http.Handler, opt
 	}
 
 	app.router.HandleRoute(serv.Route{
-		Name:    RouteBuildInfo,
+		Name:    BuildInfoRoute,
 		Method:  http.MethodGet,
 		Pattern: buildinfo.Route,
 		Handler: buildinfo.HttpHandler(app.build),
 	})
 	app.router.HandleRoute(serv.Route{
-		Name:    RouteHealthCheck,
+		Name:    HealthCheckRoute,
 		Method:  http.MethodGet,
 		Pattern: "/healthy",
 		Handler: http.HandlerFunc(func(wri http.ResponseWriter, req *http.Request) {
@@ -110,9 +118,9 @@ func New(name string, conf Config, log zerolog.Logger, handler http.Handler, opt
 	return app, nil
 }
 
-func NewGRPCServer() {
-
-}
+//func NewGRPCServer() {
+//
+//}
 
 func (app *Server) Name() string { return app.name }
 

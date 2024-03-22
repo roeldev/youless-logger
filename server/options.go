@@ -7,6 +7,7 @@ package server
 import (
 	"github.com/go-logr/zerologr"
 	"github.com/go-pogo/buildinfo"
+	"github.com/go-pogo/errors"
 	"github.com/go-pogo/serv"
 	"github.com/go-pogo/telemetry"
 	"github.com/prometheus/client_golang/prometheus"
@@ -78,8 +79,15 @@ func WithTelemetry(tc telemetry.Config) Option {
 }
 
 type PrometheusConfig struct {
-	Enabled  bool
-	Endpoint string `default:"/metrics"`
+	Enabled bool
+	Path    string `default:"/metrics"`
+}
+
+func (c PrometheusConfig) Validate() error {
+	if c.Enabled && (c.Path == "" || c.Path == "/") {
+		return errors.WithKind(ErrInvalidPrometheusPath, ConfigValidationError)
+	}
+	return nil
 }
 
 func WithTelemetryAndPrometheus(tc telemetry.Config, pc PrometheusConfig) Option {
@@ -90,9 +98,9 @@ func WithTelemetryAndPrometheus(tc telemetry.Config, pc PrometheusConfig) Option
 			prom := prometheus.NewRegistry()
 			telem.MeterProvider.WithPrometheusExporter(prom)
 			app.router.HandleRoute(serv.Route{
-				Name:    RouteMetrics,
+				Name:    PrometheusMetricsRoute,
 				Method:  http.MethodGet,
-				Pattern: pc.Endpoint,
+				Pattern: pc.Path,
 				Handler: promhttp.InstrumentMetricHandler(
 					prom,
 					promhttp.HandlerFor(prom, promhttp.HandlerOpts{}),
