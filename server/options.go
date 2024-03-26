@@ -17,6 +17,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	semconv "go.opentelemetry.io/otel/semconv/v1.24.0"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -115,8 +116,15 @@ func WithTelemetryAndPrometheus(tc telemetry.Config, pc PrometheusConfig) Option
 }
 
 func telemetryBuilder(app *Server, tc telemetry.Config) *telemetry.Builder {
+	if tc.ServiceName == "" {
+		if strings.HasPrefix(app.name, "youless-") {
+			tc.ServiceName = app.name
+		} else {
+			tc.ServiceName = "youless-" + app.name
+		}
+	}
+
 	telem := telemetry.NewBuilder(tc).Global().WithDefaultExporter()
-	telem.TracerProvider.WithAttributes(semconv.ServiceName("youless-" + app.name))
 
 	if app.build != nil {
 		telem.TracerProvider.WithAttributes(
