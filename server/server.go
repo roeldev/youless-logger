@@ -98,6 +98,7 @@ func New(name string, conf Config, log zerolog.Logger, handler http.Handler, opt
 	}
 	if err = app.server.With(
 		conf.Port,
+		conf.TLS,
 		serv.DefaultConfig(),
 		serv.WithName(app.name),
 		serv.WithLogger(serverLogger),

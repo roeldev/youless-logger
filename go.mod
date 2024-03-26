@@ -7,8 +7,8 @@ require (
 	github.com/go-pogo/buildinfo v0.6.0
 	github.com/go-pogo/env v0.4.1
 	github.com/go-pogo/errors v0.9.0
-	github.com/go-pogo/serv v0.2.0-rc1
-	github.com/go-pogo/telemetry v0.0.0-20240319183413-6f2e6362d12e
+	github.com/go-pogo/serv v0.2.0-rc2
+	github.com/go-pogo/telemetry v0.0.0-20240326173747-24e6cbcedba0
 	github.com/goccy/go-json v0.10.2
 	github.com/prometheus/client_golang v1.19.0
 	github.com/roeldev/youless-client v0.0.0-20240322181204-c0107c42836d
@@ -27,7 +27,7 @@ require (
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
-	github.com/go-pogo/rawconv v0.5.1 // indirect
+	github.com/go-pogo/rawconv v0.5.2 // indirect
 	github.com/go-pogo/writing v0.1.1 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.0 // indirect
