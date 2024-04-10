@@ -13,7 +13,6 @@ import (
 	"github.com/go-pogo/errors/errgroup"
 	"github.com/go-pogo/serv"
 	"github.com/go-pogo/serv/accesslog"
-	"github.com/go-pogo/serv/middleware"
 	"github.com/go-pogo/telemetry"
 	youlessclient "github.com/roeldev/youless-client"
 	"github.com/rs/zerolog"
@@ -41,13 +40,12 @@ func (c Config) Validate() error {
 }
 
 type Server struct {
-	name       string
-	build      *buildinfo.BuildInfo
-	log        zerolog.Logger
-	telem      *telemetry.Telemetry
-	router     serv.Router
-	server     serv.Server
-	middleware middleware.Middleware
+	name   string
+	build  *buildinfo.BuildInfo
+	log    zerolog.Logger
+	telem  *telemetry.Telemetry
+	router serv.Router
+	server serv.Server
 }
 
 func New(name string, conf Config, log zerolog.Logger, handler http.Handler, opts ...Option) (*Server, error) {
@@ -93,9 +91,6 @@ func New(name string, conf Config, log zerolog.Logger, handler http.Handler, opt
 	})
 
 	serverLogger := &logger{&app.log}
-	if conf.AccessLog {
-		app.middleware = append(app.middleware, accesslog.Middleware(serverLogger))
-	}
 	if err = app.server.With(
 		conf.Port,
 		conf.TLS,
@@ -106,7 +101,11 @@ func New(name string, conf Config, log zerolog.Logger, handler http.Handler, opt
 		return nil, err
 	}
 
-	handler = app.middleware.Wrap(app.router.ServeHTTP)
+	handler = app.router
+	if conf.AccessLog {
+		handler = accesslog.Middleware(serverLogger, handler)
+	}
+
 	if app.telem != nil {
 		handler = otelhttp.NewHandler(handler, app.name,
 			otelhttp.WithMessageEvents(otelhttp.ReadEvents, otelhttp.WriteEvents),
