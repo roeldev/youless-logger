@@ -7,11 +7,11 @@ require (
 	github.com/go-pogo/buildinfo v0.6.0
 	github.com/go-pogo/env v0.4.2
 	github.com/go-pogo/errors v0.9.0
-	github.com/go-pogo/serv v0.2.0-rc2
-	github.com/go-pogo/telemetry v0.0.0-20240406184623-31a7ec62b151
+	github.com/go-pogo/serv v0.2.0-rc3
+	github.com/go-pogo/telemetry v0.0.0-20240408200243-8e0603569dfc
 	github.com/goccy/go-json v0.10.2
 	github.com/prometheus/client_golang v1.19.0
-	github.com/roeldev/youless-client v0.0.0-20240322181204-c0107c42836d
+	github.com/roeldev/youless-client v0.0.0-20240408182514-d1262dee195f
 	github.com/rs/zerolog v1.32.0
 	github.com/uptrace/bunrouter v1.0.21
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.49.0
@@ -46,7 +46,7 @@ require (
 	go.opentelemetry.io/otel/sdk v1.24.0 // indirect
 	go.opentelemetry.io/otel/sdk/metric v1.24.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.1.0 // indirect
-	golang.org/x/sync v0.6.0 // indirect
+	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
