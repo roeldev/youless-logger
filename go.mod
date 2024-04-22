@@ -7,7 +7,7 @@ require (
 	github.com/go-pogo/buildinfo v0.6.0
 	github.com/go-pogo/env v0.4.2
 	github.com/go-pogo/errors v0.9.0
-	github.com/go-pogo/serv v0.2.0-rc3
+	github.com/go-pogo/serv v0.2.0
 	github.com/go-pogo/telemetry v0.0.0-20240408200243-8e0603569dfc
 	github.com/goccy/go-json v0.10.2
 	github.com/prometheus/client_golang v1.19.0
