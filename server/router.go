@@ -7,7 +7,6 @@ package server
 import (
 	"github.com/go-pogo/serv"
 	"github.com/rs/zerolog"
-	"github.com/uptrace/bunrouter"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"net/http"
 )
@@ -15,19 +14,29 @@ import (
 var _ serv.Router = (*router)(nil)
 
 type router struct {
+	*serv.ServeMux
 	log *zerolog.Logger
-	mux *bunrouter.Router
 }
 
-func newRouter(log *zerolog.Logger, handler http.Handler, opts ...bunrouter.Option) *router {
-	if handler != nil {
-		opts = append(opts, bunrouter.WithNotFoundHandler(bunrouter.HTTPHandler(handler)))
-	}
-
+func newRouter(log *zerolog.Logger) *router {
 	return &router{
-		log: log,
-		mux: bunrouter.New(opts...),
+		ServeMux: serv.NewServeMux(),
+		log:      log,
 	}
+}
+
+func (r *router) Handle(pattern string, handler http.Handler) {
+	r.HandleRoute(serv.Route{
+		Pattern: pattern,
+		Handler: handler,
+	})
+}
+
+func (r *router) HandleFunc(pattern string, handler func(http.ResponseWriter, *http.Request)) {
+	r.HandleRoute(serv.Route{
+		Pattern: pattern,
+		Handler: http.HandlerFunc(handler),
+	})
 }
 
 func (r *router) HandleRoute(route serv.Route) {
@@ -39,13 +48,6 @@ func (r *router) HandleRoute(route serv.Route) {
 			Msg("register route")
 	}
 
-	r.mux.Handle(
-		route.Method,
-		route.Pattern,
-		bunrouter.HTTPHandler(otelhttp.WithRouteTag(route.Pattern, route)),
-	)
-}
-
-func (r *router) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
-	r.mux.ServeHTTP(writer, request)
+	route.Handler = otelhttp.WithRouteTag(route.Pattern, route.Handler)
+	r.ServeMux.HandleRoute(route)
 }

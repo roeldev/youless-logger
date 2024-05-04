@@ -64,7 +64,7 @@ func With(fn func(app *Server) Option) Option {
 	})
 }
 
-func WithRoutes(r serv.RoutesRegisterer) Option {
+func WithRoutesRegisterer(r serv.RoutesRegisterer) Option {
 	return optionFunc(func(app *Server, _ Config) error {
 		r.RegisterRoutes(app.router)
 		return nil

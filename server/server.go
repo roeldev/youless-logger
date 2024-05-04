@@ -9,6 +9,7 @@ package server
 import (
 	"context"
 	"github.com/go-pogo/buildinfo"
+	"github.com/go-pogo/easytls"
 	"github.com/go-pogo/errors"
 	"github.com/go-pogo/errors/errgroup"
 	"github.com/go-pogo/serv"
@@ -23,6 +24,7 @@ import (
 const (
 	BuildInfoRoute         = buildinfo.MetricName
 	HealthCheckRoute       = "healthcheck"
+	FaviconRoute           = "favicon"
 	PrometheusMetricsRoute = "prometheus-metrics"
 
 	ErrInvalidPrometheusPath errors.Msg = "invalid prometheus path"
@@ -32,7 +34,7 @@ const (
 type Config struct {
 	Port      serv.Port `default:"2512"`
 	AccessLog bool      `default:"true"`
-	TLS       serv.TLSConfig
+	TLS       easytls.Config
 }
 
 func (c Config) Validate() error {
@@ -40,23 +42,35 @@ func (c Config) Validate() error {
 }
 
 type Server struct {
-	name   string
-	build  *buildinfo.BuildInfo
-	log    zerolog.Logger
-	telem  *telemetry.Telemetry
-	router serv.Router
+	name  string
+	build *buildinfo.BuildInfo
+	log   zerolog.Logger
+	telem *telemetry.Telemetry
+	//health healthcheck.Checker
+	router *router
 	server serv.Server
 }
 
-func New(name string, conf Config, log zerolog.Logger, handler http.Handler, opts ...Option) (*Server, error) {
+func New(name string, conf Config, log zerolog.Logger, opts ...Option) (*Server, error) {
 	app := &Server{
 		name:   name,
 		log:    log,
-		router: newRouter(&log, handler),
+		router: newRouter(&log),
 	}
 
-	var err error
+	logger := &logger{&app.log}
+	err := app.health.With(
+		healthcheck.WithLogger(logger),
+	)
+	if err != nil {
+		return nil, err
+	}
+
 	for _, opt := range opts {
+		if opt == nil {
+			continue
+		}
+
 		err = errors.Append(err, opt.apply(app, conf))
 		if rr, ok := opt.(serv.RoutesRegisterer); ok {
 			rr.RegisterRoutes(app.router)
@@ -66,12 +80,14 @@ func New(name string, conf Config, log zerolog.Logger, handler http.Handler, opt
 		return nil, err
 	}
 
-	app.router.HandleRoute(serv.Route{
-		Name:    BuildInfoRoute,
-		Method:  http.MethodGet,
-		Pattern: buildinfo.Route,
-		Handler: buildinfo.HttpHandler(app.build),
-	})
+	if app.build != nil {
+		app.router.HandleRoute(serv.Route{
+			Name:    BuildInfoRoute,
+			Method:  http.MethodGet,
+			Pattern: buildinfo.Route,
+			Handler: buildinfo.HttpHandler(app.build),
+		})
+	}
 	app.router.HandleRoute(serv.Route{
 		Name:    HealthCheckRoute,
 		Method:  http.MethodGet,
@@ -89,23 +105,27 @@ func New(name string, conf Config, log zerolog.Logger, handler http.Handler, opt
 			wri.WriteHeader(http.StatusNoContent)
 		}),
 	})
+	app.router.HandleRoute(serv.Route{
+		Name:    FaviconRoute,
+		Method:  http.MethodGet,
+		Pattern: "/favicon.ico",
+		Handler: accesslog.IgnoreHandler(serv.NoContentHandler()),
+	})
 
-	serverLogger := &logger{&app.log}
 	if err = app.server.With(
 		conf.Port,
-		conf.TLS,
 		serv.DefaultConfig(),
 		serv.WithName(app.name),
-		serv.WithLogger(serverLogger),
+		serv.WithLogger(logger),
+		serv.WithTLSConfig(easytls.DefaultTLSConfig(), conf.TLS),
 	); err != nil {
 		return nil, err
 	}
 
-	handler = app.router
+	var handler http.Handler = app.router
 	if conf.AccessLog {
-		handler = accesslog.Middleware(serverLogger, handler)
+		handler = accesslog.Middleware(logger, handler)
 	}
-
 	if app.telem != nil {
 		handler = otelhttp.NewHandler(handler, app.name,
 			otelhttp.WithMessageEvents(otelhttp.ReadEvents, otelhttp.WriteEvents),
