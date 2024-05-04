@@ -13,7 +13,7 @@ require (
 	github.com/go-pogo/telemetry v0.0.0-20240504135631-61f9b35fe391
 	github.com/goccy/go-json v0.10.2
 	github.com/prometheus/client_golang v1.19.0
-	github.com/roeldev/youless-client v0.0.0-20240408182514-d1262dee195f
+	github.com/roeldev/youless-client v0.0.0-20240504140222-76908f8c372c
 	github.com/rs/zerolog v1.32.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.51.0
 	go.opentelemetry.io/otel v1.26.0
