@@ -8,6 +8,7 @@ import (
 	"github.com/go-logr/zerologr"
 	"github.com/go-pogo/buildinfo"
 	"github.com/go-pogo/errors"
+	"github.com/go-pogo/healthcheck"
 	"github.com/go-pogo/serv"
 	"github.com/go-pogo/telemetry"
 	"github.com/prometheus/client_golang/prometheus"
@@ -67,6 +68,20 @@ func With(fn func(app *Server) Option) Option {
 func WithRoutesRegisterer(r serv.RoutesRegisterer) Option {
 	return optionFunc(func(app *Server, _ Config) error {
 		r.RegisterRoutes(app.router)
+		return nil
+	})
+}
+
+func WithHealthStatusChecker(name string, check healthcheck.StatusChecker) Option {
+	return optionFunc(func(app *Server, _ Config) error {
+		app.health.Register(name, check)
+		return nil
+	})
+}
+
+func WithNotFoundHandler(h http.Handler) Option {
+	return optionFunc(func(app *Server, _ Config) error {
+		app.router.WithNotFoundHandler(h)
 		return nil
 	})
 }

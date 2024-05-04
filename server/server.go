@@ -12,6 +12,7 @@ import (
 	"github.com/go-pogo/easytls"
 	"github.com/go-pogo/errors"
 	"github.com/go-pogo/errors/errgroup"
+	"github.com/go-pogo/healthcheck"
 	"github.com/go-pogo/serv"
 	"github.com/go-pogo/serv/accesslog"
 	"github.com/go-pogo/telemetry"
@@ -42,11 +43,11 @@ func (c Config) Validate() error {
 }
 
 type Server struct {
-	name  string
-	build *buildinfo.BuildInfo
-	log   zerolog.Logger
-	telem *telemetry.Telemetry
-	//health healthcheck.Checker
+	name   string
+	build  *buildinfo.BuildInfo
+	log    zerolog.Logger
+	telem  *telemetry.Telemetry
+	health healthcheck.Checker
 	router *router
 	server serv.Server
 }
@@ -91,19 +92,8 @@ func New(name string, conf Config, log zerolog.Logger, opts ...Option) (*Server,
 	app.router.HandleRoute(serv.Route{
 		Name:    HealthCheckRoute,
 		Method:  http.MethodGet,
-		Pattern: "/healthy",
-		Handler: http.HandlerFunc(func(wri http.ResponseWriter, req *http.Request) {
-			_, _ = wri.Write([]byte("OK"))
-		}),
-	})
-	app.router.HandleRoute(serv.Route{
-		Name:    "favicon",
-		Method:  http.MethodGet,
-		Pattern: "/favicon.ico",
-		Handler: http.HandlerFunc(func(wri http.ResponseWriter, req *http.Request) {
-			accesslog.SetShouldIgnore(req.Context(), true)
-			wri.WriteHeader(http.StatusNoContent)
-		}),
+		Pattern: healthcheck.PathPattern,
+		Handler: healthcheck.HTTPHandler(&app.health),
 	})
 	app.router.HandleRoute(serv.Route{
 		Name:    FaviconRoute,
@@ -145,6 +135,8 @@ func New(name string, conf Config, log zerolog.Logger, opts ...Option) (*Server,
 func (app *Server) Name() string { return app.name }
 
 func (app *Server) Router() serv.Router { return app.router }
+
+func (app *Server) HealthChecker() *healthcheck.Checker { return &app.health }
 
 func (app *Server) MeterProvider() telemetry.MeterProvider {
 	return app.telem.MeterProvider()

@@ -5,6 +5,7 @@
 package server
 
 import (
+	"github.com/go-pogo/healthcheck"
 	"github.com/go-pogo/serv"
 	"github.com/go-pogo/serv/accesslog"
 	"github.com/rs/zerolog"
@@ -13,8 +14,9 @@ import (
 )
 
 var (
-	_ serv.Logger      = (*logger)(nil)
-	_ accesslog.Logger = (*logger)(nil)
+	_ serv.Logger        = (*logger)(nil)
+	_ accesslog.Logger   = (*logger)(nil)
+	_ healthcheck.Logger = (*logger)(nil)
 )
 
 type logger struct{ *zerolog.Logger }
@@ -61,4 +63,18 @@ func (l *logger) Log(_ context.Context, det accesslog.Details, req *http.Request
 		Int64("bytes_written", det.BytesWritten).
 		Dur("duration", det.Duration).
 		Msg(accesslog.Message)
+}
+
+func (l *logger) StatusChanged(status, oldStatus healthcheck.Status) {
+	l.Logger.Info().
+		Stringer("status", status).
+		Stringer("old_status", oldStatus).
+		Msg("health status changed")
+}
+
+func (l *logger) StatusChecked(name string, stat healthcheck.Status) {
+	l.Logger.Debug().
+		Str("name", name).
+		Stringer("status", stat).
+		Msg("health status checked")
 }
