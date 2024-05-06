@@ -53,15 +53,15 @@ type Server struct {
 }
 
 func New(name string, conf Config, zl zerolog.Logger, opts ...Option) (*Server, error) {
-	app := &Server{
+	srv := &Server{
 		name:   name,
 		log:    zl,
 		router: newRouter(&zl),
 	}
-	log := &logger{&app.log}
+	log := &logger{&srv.log}
 
 	// setup health checker
-	err := app.health.With(
+	err := srv.health.With(
 		healthcheck.WithLogger(log),
 	)
 	if err != nil {
@@ -74,20 +74,20 @@ func New(name string, conf Config, zl zerolog.Logger, opts ...Option) (*Server, 
 			continue
 		}
 
-		err = errors.Append(err, opt(app, conf))
+		err = errors.Append(err, opt(srv, conf))
 	}
 	if err != nil {
 		return nil, err
 	}
 
 	// add common routes
-	app.router.HandleRoute(serv.Route{
+	srv.router.HandleRoute(serv.Route{
 		Name:    HealthCheckRoute,
 		Method:  http.MethodGet,
 		Pattern: healthcheck.PathPattern,
-		Handler: healthcheck.HTTPHandler(&app.health),
+		Handler: healthcheck.HTTPHandler(&srv.health),
 	})
-	app.router.HandleRoute(serv.Route{
+	srv.router.HandleRoute(serv.Route{
 		Name:    FaviconRoute,
 		Method:  http.MethodGet,
 		Pattern: "/favicon.ico",
@@ -95,33 +95,33 @@ func New(name string, conf Config, zl zerolog.Logger, opts ...Option) (*Server, 
 	})
 
 	// setup server
-	if err = app.server.With(
+	if err = srv.server.With(
 		conf.Port,
 		serv.DefaultConfig(),
-		serv.WithName(app.name),
+		serv.WithName(srv.name),
 		serv.WithLogger(log),
 		serv.WithTLSConfig(easytls.DefaultTLSConfig(), conf.TLS),
 	); err != nil {
 		return nil, err
 	}
 
-	var handler http.Handler = app.router
+	var handler http.Handler = srv.router
 	if conf.AccessLog {
 		handler = accesslog.Middleware(log, handler)
 	}
-	if app.telem != nil {
-		handler = otelhttp.NewHandler(handler, app.name,
+	if srv.telem != nil {
+		handler = otelhttp.NewHandler(handler, srv.name,
 			otelhttp.WithMessageEvents(otelhttp.ReadEvents, otelhttp.WriteEvents),
-			otelhttp.WithTracerProvider(app.telem.TracerProvider()),
-			otelhttp.WithMeterProvider(app.telem.MeterProvider()),
+			otelhttp.WithTracerProvider(srv.telem.TracerProvider()),
+			otelhttp.WithMeterProvider(srv.telem.MeterProvider()),
 		)
 	}
 
-	app.server.Handler = handler
+	srv.server.Handler = handler
 
 	// enable server health checking
-	app.health.Register("server", healthcheck.HealthCheckerFunc(func(_ context.Context) healthcheck.Status {
-		switch app.server.State() {
+	srv.health.Register("server", healthcheck.HealthCheckerFunc(func(_ context.Context) healthcheck.Status {
+		switch srv.server.State() {
 		case serv.StateUnstarted:
 			return healthcheck.StatusUnknown
 		case serv.StateStarted:
@@ -131,47 +131,47 @@ func New(name string, conf Config, zl zerolog.Logger, opts ...Option) (*Server, 
 		}
 	}))
 
-	return app, nil
+	return srv, nil
 }
 
 //func NewGRPCServer() {
 //
 //}
 
-func (app *Server) Name() string { return app.name }
+func (srv *Server) Name() string { return srv.name }
 
-func (app *Server) Router() serv.Router { return app.router }
+func (srv *Server) Router() serv.Router { return srv.router }
 
-func (app *Server) HealthChecker() *healthcheck.Checker { return &app.health }
+func (srv *Server) HealthChecker() *healthcheck.Checker { return &srv.health }
 
-func (app *Server) MeterProvider() telemetry.MeterProvider {
-	return app.telem.MeterProvider()
+func (srv *Server) MeterProvider() telemetry.MeterProvider {
+	return srv.telem.MeterProvider()
 }
 
-func (app *Server) TracerProvider() telemetry.TracerProvider {
-	return app.telem.TracerProvider()
+func (srv *Server) TracerProvider() telemetry.TracerProvider {
+	return srv.telem.TracerProvider()
 }
 
-func (app *Server) Run(ctx context.Context) error {
-	app.server.BaseContext = serv.BaseContext(ctx)
-	return app.server.Run()
+func (srv *Server) Run(ctx context.Context) error {
+	srv.server.BaseContext = serv.BaseContext(ctx)
+	return srv.server.Run()
 }
 
-func (app *Server) Shutdown(ctx context.Context) error {
-	if app.telem == nil {
-		return app.server.Shutdown(ctx)
-	}
-
-	if err := app.telem.ForceFlush(ctx); err != nil {
-		return err
+func (srv *Server) Shutdown(ctx context.Context) error {
+	if srv.telem == nil {
+		return srv.server.Shutdown(ctx)
 	}
 
 	wg, ctx := errgroup.WithContext(ctx)
 	wg.Go(func() error {
-		return app.server.Shutdown(ctx)
+		return srv.server.Shutdown(ctx)
 	})
 	wg.Go(func() error {
-		return app.telem.Shutdown(ctx)
+		if err := srv.telem.ForceFlush(ctx); err != nil {
+			return err
+		}
+
+		return srv.telem.Shutdown(ctx)
 	})
 	return wg.Wait()
 }
