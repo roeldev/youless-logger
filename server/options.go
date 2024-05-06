@@ -72,7 +72,7 @@ func WithRoutesRegisterer(r serv.RoutesRegisterer) Option {
 	})
 }
 
-func WithHealthStatusChecker(name string, check healthcheck.StatusChecker) Option {
+func WithHealthChecker(name string, check healthcheck.HealthChecker) Option {
 	return optionFunc(func(app *Server, _ Config) error {
 		app.health.Register(name, check)
 		return nil
