@@ -112,6 +112,17 @@ func New(name string, conf Config, log zerolog.Logger, opts ...Option) (*Server,
 		return nil, err
 	}
 
+	app.health.Register("server", healthcheck.HealthCheckerFunc(func(_ context.Context) healthcheck.Status {
+		switch app.server.State() {
+		case serv.StateUnstarted:
+			return healthcheck.StatusUnknown
+		case serv.StateStarted:
+			return healthcheck.StatusHealthy
+		default:
+			return healthcheck.StatusUnhealthy
+		}
+	}))
+
 	var handler http.Handler = app.router
 	if conf.AccessLog {
 		handler = accesslog.Middleware(logger, handler)

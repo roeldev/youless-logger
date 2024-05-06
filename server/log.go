@@ -65,14 +65,14 @@ func (l *logger) Log(_ context.Context, det accesslog.Details, req *http.Request
 		Msg(accesslog.Message)
 }
 
-func (l *logger) StatusChanged(status, oldStatus healthcheck.Status) {
+func (l *logger) HealthChanged(status, oldStatus healthcheck.Status) {
 	l.Logger.Info().
 		Stringer("status", status).
 		Stringer("old_status", oldStatus).
 		Msg("health status changed")
 }
 
-func (l *logger) StatusChecked(name string, stat healthcheck.Status) {
+func (l *logger) HealthChecked(name string, stat healthcheck.Status) {
 	l.Logger.Debug().
 		Str("name", name).
 		Stringer("status", stat).
