@@ -5,7 +5,7 @@ go 1.22.0
 require (
 	github.com/go-logr/zerologr v1.2.3
 	github.com/go-pogo/buildinfo v0.6.0
-	github.com/go-pogo/easytls v0.0.0-20240503185512-df01a3c3e3d3
+	github.com/go-pogo/easytls v0.0.0-20240506170801-5cc05692f0ec
 	github.com/go-pogo/env v0.4.3
 	github.com/go-pogo/errors v0.9.0
 	github.com/go-pogo/healthcheck v0.0.0-20240506163415-8efad8a77f9a
