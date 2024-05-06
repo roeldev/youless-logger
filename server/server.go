@@ -52,43 +52,35 @@ type Server struct {
 	server serv.Server
 }
 
-func New(name string, conf Config, log zerolog.Logger, opts ...Option) (*Server, error) {
+func New(name string, conf Config, zl zerolog.Logger, opts ...Option) (*Server, error) {
 	app := &Server{
 		name:   name,
-		log:    log,
-		router: newRouter(&log),
+		log:    zl,
+		router: newRouter(&zl),
 	}
+	log := &logger{&app.log}
 
-	logger := &logger{&app.log}
+	// setup health checker
 	err := app.health.With(
-		healthcheck.WithLogger(logger),
+		healthcheck.WithLogger(log),
 	)
 	if err != nil {
 		return nil, err
 	}
 
+	// apply options
 	for _, opt := range opts {
 		if opt == nil {
 			continue
 		}
 
-		err = errors.Append(err, opt.apply(app, conf))
-		if rr, ok := opt.(serv.RoutesRegisterer); ok {
-			rr.RegisterRoutes(app.router)
-		}
+		err = errors.Append(err, opt(app, conf))
 	}
 	if err != nil {
 		return nil, err
 	}
 
-	if app.build != nil {
-		app.router.HandleRoute(serv.Route{
-			Name:    BuildInfoRoute,
-			Method:  http.MethodGet,
-			Pattern: buildinfo.Route,
-			Handler: buildinfo.HttpHandler(app.build),
-		})
-	}
+	// add common routes
 	app.router.HandleRoute(serv.Route{
 		Name:    HealthCheckRoute,
 		Method:  http.MethodGet,
@@ -102,16 +94,32 @@ func New(name string, conf Config, log zerolog.Logger, opts ...Option) (*Server,
 		Handler: accesslog.IgnoreHandler(serv.NoContentHandler()),
 	})
 
+	// setup server
 	if err = app.server.With(
 		conf.Port,
 		serv.DefaultConfig(),
 		serv.WithName(app.name),
-		serv.WithLogger(logger),
+		serv.WithLogger(log),
 		serv.WithTLSConfig(easytls.DefaultTLSConfig(), conf.TLS),
 	); err != nil {
 		return nil, err
 	}
 
+	var handler http.Handler = app.router
+	if conf.AccessLog {
+		handler = accesslog.Middleware(log, handler)
+	}
+	if app.telem != nil {
+		handler = otelhttp.NewHandler(handler, app.name,
+			otelhttp.WithMessageEvents(otelhttp.ReadEvents, otelhttp.WriteEvents),
+			otelhttp.WithTracerProvider(app.telem.TracerProvider()),
+			otelhttp.WithMeterProvider(app.telem.MeterProvider()),
+		)
+	}
+
+	app.server.Handler = handler
+
+	// enable server health checking
 	app.health.Register("server", healthcheck.HealthCheckerFunc(func(_ context.Context) healthcheck.Status {
 		switch app.server.State() {
 		case serv.StateUnstarted:
@@ -123,19 +131,6 @@ func New(name string, conf Config, log zerolog.Logger, opts ...Option) (*Server,
 		}
 	}))
 
-	var handler http.Handler = app.router
-	if conf.AccessLog {
-		handler = accesslog.Middleware(logger, handler)
-	}
-	if app.telem != nil {
-		handler = otelhttp.NewHandler(handler, app.name,
-			otelhttp.WithMessageEvents(otelhttp.ReadEvents, otelhttp.WriteEvents),
-			otelhttp.WithTracerProvider(app.telem.TracerProvider()),
-			otelhttp.WithMeterProvider(app.telem.MeterProvider()),
-		)
-	}
-
-	app.server.Handler = handler
 	return app, nil
 }
 

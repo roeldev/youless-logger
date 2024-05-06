@@ -14,13 +14,15 @@ import (
 )
 
 var (
-	_ serv.Logger        = (*logger)(nil)
+	_ serv.Logger = (*logger)(nil)
+	//_ serv.ErrorLogger   = (*logger)(nil)
 	_ accesslog.Logger   = (*logger)(nil)
 	_ healthcheck.Logger = (*logger)(nil)
 )
 
 type logger struct{ *zerolog.Logger }
 
+// ServerStart is part of the [serv.Logger] interface.
 func (l *logger) ServerStart(name, addr string) {
 	l.Logger.Info().
 		Str("name", name).
@@ -28,18 +30,21 @@ func (l *logger) ServerStart(name, addr string) {
 		Msg("server starting")
 }
 
+// ServerShutdown is part of the [serv.Logger] interface.
 func (l *logger) ServerShutdown(name string) {
 	l.Logger.Info().
 		Str("name", name).
 		Msg("server shutting down")
 }
 
+// ServerClose is part of the [serv.Logger] interface.
 func (l *logger) ServerClose(name string) {
 	l.Logger.Info().
 		Str("name", name).
 		Msg("server closing")
 }
 
+// Log is part of the [accesslog.Logger] interface.
 func (l *logger) Log(_ context.Context, det accesslog.Details, req *http.Request) {
 	var lvl zerolog.Level
 	switch true {
@@ -65,6 +70,7 @@ func (l *logger) Log(_ context.Context, det accesslog.Details, req *http.Request
 		Msg(accesslog.Message)
 }
 
+// HealthChanged is part of the [healthcheck.Logger] interface.
 func (l *logger) HealthChanged(status, oldStatus healthcheck.Status) {
 	l.Logger.Info().
 		Stringer("status", status).
@@ -72,6 +78,7 @@ func (l *logger) HealthChanged(status, oldStatus healthcheck.Status) {
 		Msg("health status changed")
 }
 
+// HealthChecked is part of the [healthcheck.Logger] interface.
 func (l *logger) HealthChecked(name string, stat healthcheck.Status) {
 	l.Logger.Debug().
 		Str("name", name).

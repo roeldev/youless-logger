@@ -22,17 +22,18 @@ import (
 	"time"
 )
 
-type Option interface {
-	apply(app *Server, conf Config) error
-}
-
-type optionFunc func(app *Server, conf Config) error
-
-func (fn optionFunc) apply(app *Server, conf Config) error { return fn(app, conf) }
+type Option func(app *Server, conf Config) error
 
 func WithBuildInfo(bld *buildinfo.BuildInfo) Option {
-	return optionFunc(func(app *Server, _ Config) error {
+	return func(app *Server, _ Config) error {
 		app.build = bld
+		app.router.HandleRoute(serv.Route{
+			Name:    BuildInfoRoute,
+			Method:  http.MethodGet,
+			Pattern: buildinfo.Route,
+			Handler: buildinfo.HttpHandler(app.build),
+		})
+
 		event := app.log.Info().
 			Str("go_version", bld.GoVersion()).
 			Str("version", bld.Version).
@@ -45,53 +46,53 @@ func WithBuildInfo(bld *buildinfo.BuildInfo) Option {
 
 		event.Msg("buildinfo")
 		return nil
-	})
+	}
 }
 
-func With(fn func(app *Server) Option) Option {
-	return optionFunc(func(app *Server, conf Config) error {
-		opt := fn(app)
-		if opt == nil {
-			return nil
-		}
-
-		if err := opt.apply(app, conf); err != nil {
-			return err
-		}
-		if rr, ok := opt.(serv.RoutesRegisterer); ok {
-			rr.RegisterRoutes(app.router)
-		}
-		return nil
-	})
-}
+//func With(fn func(app *Server) Option) Option {
+//	return func(app *Server, conf Config) error {
+//		opt := fn(app)
+//		if opt == nil {
+//			return nil
+//		}
+//
+//		if err := opt(app, conf); err != nil {
+//			return err
+//		}
+//		if rr, ok := opt.(serv.RoutesRegisterer); ok {
+//			rr.RegisterRoutes(app.router)
+//		}
+//		return nil
+//	}
+//}
 
 func WithRoutesRegisterer(r serv.RoutesRegisterer) Option {
-	return optionFunc(func(app *Server, _ Config) error {
+	return func(app *Server, _ Config) error {
 		r.RegisterRoutes(app.router)
 		return nil
-	})
+	}
 }
 
 func WithHealthChecker(name string, check healthcheck.HealthChecker) Option {
-	return optionFunc(func(app *Server, _ Config) error {
+	return func(app *Server, _ Config) error {
 		app.health.Register(name, check)
 		return nil
-	})
+	}
 }
 
 func WithNotFoundHandler(h http.Handler) Option {
-	return optionFunc(func(app *Server, _ Config) error {
+	return func(app *Server, _ Config) error {
 		app.router.WithNotFoundHandler(h)
 		return nil
-	})
+	}
 }
 
 func WithTelemetry(tc telemetry.Config) Option {
-	return optionFunc(func(app *Server, c Config) error {
+	return func(app *Server, c Config) error {
 		var err error
 		app.telem, err = telemetryBuilder(app, tc).Build()
 		return err
-	})
+	}
 }
 
 type PrometheusConfig struct {
@@ -107,7 +108,7 @@ func (c PrometheusConfig) Validate() error {
 }
 
 func WithTelemetryAndPrometheus(tc telemetry.Config, pc PrometheusConfig) Option {
-	return optionFunc(func(app *Server, c Config) error {
+	return func(app *Server, c Config) error {
 		telem := telemetryBuilder(app, tc)
 
 		if pc.Enabled {
@@ -127,7 +128,7 @@ func WithTelemetryAndPrometheus(tc telemetry.Config, pc PrometheusConfig) Option
 		var err error
 		app.telem, err = telem.Build()
 		return err
-	})
+	}
 }
 
 func telemetryBuilder(app *Server, tc telemetry.Config) *telemetry.Builder {
