@@ -5,14 +5,14 @@ go 1.22.0
 require (
 	github.com/go-logr/zerologr v1.2.3
 	github.com/go-pogo/buildinfo v0.6.0
-	github.com/go-pogo/easytls v0.0.0-20240506180301-47e5867d711f
+	github.com/go-pogo/easytls v0.0.0-20240512080543-edfb7ed3375a
 	github.com/go-pogo/env v0.4.3
-	github.com/go-pogo/errors v0.9.0
-	github.com/go-pogo/healthcheck v0.0.0-20240506163415-8efad8a77f9a
+	github.com/go-pogo/errors v0.10.0
+	github.com/go-pogo/healthcheck v0.0.0-20240512082220-28e49a9c3b10
 	github.com/go-pogo/serv v0.3.0
-	github.com/go-pogo/telemetry v0.0.0-20240504135631-61f9b35fe391
+	github.com/go-pogo/telemetry v0.0.0-20240512081232-61cd73044b6c
 	github.com/goccy/go-json v0.10.2
-	github.com/prometheus/client_golang v1.19.0
+	github.com/prometheus/client_golang v1.19.1
 	github.com/roeldev/youless-client v0.0.0-20240504140222-76908f8c372c
 	github.com/rs/zerolog v1.32.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.51.0
@@ -29,7 +29,7 @@ require (
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-pogo/rawconv v0.5.3 // indirect
-	github.com/go-pogo/writing v0.1.1 // indirect
+	github.com/go-pogo/writing v0.2.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
@@ -50,8 +50,8 @@ require (
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240429193739-8cf5692501f6 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240429193739-8cf5692501f6 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240509183442-62759503f434 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240509183442-62759503f434 // indirect
 	google.golang.org/grpc v1.63.2 // indirect
-	google.golang.org/protobuf v1.34.0 // indirect
+	google.golang.org/protobuf v1.34.1 // indirect
 )
