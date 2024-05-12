@@ -120,7 +120,7 @@ func New(name string, conf Config, zl zerolog.Logger, opts ...Option) (*Server, 
 	srv.server.Handler = handler
 
 	// enable server health checking
-	srv.health.Register("server", healthcheck.HealthCheckerFunc(func(_ context.Context) healthcheck.Status {
+	srv.health.Register("youless.server", healthcheck.HealthCheckerFunc(func(_ context.Context) healthcheck.Status {
 		switch srv.server.State() {
 		case serv.StateUnstarted:
 			return healthcheck.StatusUnknown
