@@ -1,0 +1,44 @@
+name: Lint
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**.go'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.go'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: Run linter
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: Verify formatting
+        run: gofmt -s -w . && git diff --exit-code
+
+      - name: Run go vet
+        run: go vet ./...
+
+      - name: Verify tidy modules
+        run: go mod tidy && git diff --exit-code
+
+      - name: Verify dependencies
+        run: go mod download && go mod verify
