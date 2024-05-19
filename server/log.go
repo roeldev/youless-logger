@@ -30,6 +30,16 @@ func (l *logger) ServerStart(name, addr string) {
 		Msg("server starting")
 }
 
+// ServerStartTLS is part of the [serv.Logger] interface.
+func (l *logger) ServerStartTLS(name, addr, certFile, keyFile string) {
+	l.Logger.Info().
+		Str("name", name).
+		Str("addr", addr).
+		Str("cert_file", certFile).
+		Str("key_file", keyFile).
+		Msg("server starting")
+}
+
 // ServerShutdown is part of the [serv.Logger] interface.
 func (l *logger) ServerShutdown(name string) {
 	l.Logger.Info().
