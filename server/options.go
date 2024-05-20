@@ -5,7 +5,6 @@
 package server
 
 import (
-	"github.com/go-logr/zerologr"
 	"github.com/go-pogo/buildinfo"
 	"github.com/go-pogo/errors"
 	"github.com/go-pogo/healthcheck"
@@ -13,13 +12,7 @@ import (
 	"github.com/go-pogo/telemetry"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/rs/zerolog"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/attribute"
-	semconv "go.opentelemetry.io/otel/semconv/v1.24.0"
 	"net/http"
-	"strings"
-	"time"
 )
 
 type Option func(app *Server, conf Config) error
@@ -129,31 +122,4 @@ func WithTelemetryAndPrometheus(tc telemetry.Config, pc PrometheusConfig) Option
 		app.telem, err = telem.Build()
 		return err
 	}
-}
-
-func telemetryBuilder(app *Server, tc telemetry.Config) *telemetry.Builder {
-	if tc.ServiceName == "" {
-		if strings.HasPrefix(app.name, "youless-") {
-			tc.ServiceName = app.name
-		} else {
-			tc.ServiceName = "youless-" + app.name
-		}
-	}
-
-	telem := telemetry.NewBuilder(tc).Global().WithDefaultExporter()
-
-	if app.build != nil {
-		telem.TracerProvider.WithAttributes(
-			semconv.ServiceVersion(app.build.Version),
-			attribute.String("vcs.revision", app.build.Revision),
-			attribute.String("vcs.time", app.build.Time.Format(time.RFC3339)),
-		)
-	}
-
-	zl := app.log.Level(zerolog.DebugLevel)
-	otel.SetLogger(zerologr.New(&zl))
-	otel.SetErrorHandler(otel.ErrorHandlerFunc(func(err error) {
-		app.log.Err(err).Msg("otel error")
-	}))
-	return telem
 }

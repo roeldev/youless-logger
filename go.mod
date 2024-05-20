@@ -10,7 +10,7 @@ require (
 	github.com/go-pogo/errors v0.10.0
 	github.com/go-pogo/healthcheck v0.0.0-20240512090415-c01c4055f70a
 	github.com/go-pogo/serv v0.3.1
-	github.com/go-pogo/telemetry v0.0.0-20240512090627-e98ad1a7fe7e
+	github.com/go-pogo/telemetry v0.0.0-20240520154623-388f6825f802
 	github.com/goccy/go-json v0.10.2
 	github.com/prometheus/client_golang v1.19.1
 	github.com/roeldev/youless-client v0.0.0-20240512093625-d1e0185bf01c
@@ -50,8 +50,8 @@ require (
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240515191416-fc5f0ca64291 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240515191416-fc5f0ca64291 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240520151616-dc85e6b867a5 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240520151616-dc85e6b867a5 // indirect
 	google.golang.org/grpc v1.64.0 // indirect
 	google.golang.org/protobuf v1.34.1 // indirect
 )
