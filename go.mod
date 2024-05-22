@@ -9,8 +9,8 @@ require (
 	github.com/go-pogo/env v0.4.3
 	github.com/go-pogo/errors v0.10.0
 	github.com/go-pogo/healthcheck v0.0.0-20240521200503-6d24b23674e2
-	github.com/go-pogo/serv v0.3.1
-	github.com/go-pogo/telemetry v0.0.0-20240520154623-388f6825f802
+	github.com/go-pogo/serv v0.3.2
+	github.com/go-pogo/telemetry v0.0.0-20240522202800-dc04eba573f1
 	github.com/goccy/go-json v0.10.3
 	github.com/prometheus/client_golang v1.19.1
 	github.com/roeldev/youless-client v0.0.0-20240512093625-d1e0185bf01c
