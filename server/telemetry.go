@@ -53,8 +53,7 @@ var _ healthcheck.HealthChecker = (*otelHealthChecker)(nil)
 
 type otelHealthChecker struct {
 	mut     sync.RWMutex
-	count   uint8
-	last    time.Time
+	lastErr time.Time
 	timeout time.Duration
 }
 
@@ -62,11 +61,11 @@ func (o *otelHealthChecker) CheckHealth(_ context.Context) healthcheck.Status {
 	o.mut.RLock()
 	defer o.mut.RUnlock()
 
-	if o.count > 3 {
-		return healthcheck.StatusUnhealthy
-	}
-	if o.last.IsZero() {
+	if o.lastErr.IsZero() {
 		return healthcheck.StatusUnknown
+	}
+	if time.Since(o.lastErr) <= o.timeout {
+		return healthcheck.StatusUnhealthy
 	}
 	return healthcheck.StatusHealthy
 }
@@ -74,10 +73,5 @@ func (o *otelHealthChecker) CheckHealth(_ context.Context) healthcheck.Status {
 func (o *otelHealthChecker) markError() {
 	o.mut.Lock()
 	defer o.mut.Unlock()
-
-	if time.Since(o.last) > o.timeout {
-		o.count = 1
-	} else {
-		o.count++
-	}
+	o.lastErr = time.Now()
 }
