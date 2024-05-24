@@ -20,8 +20,8 @@ github.com/go-pogo/buildinfo v0.6.0 h1:kuo/jNq+/wlgMk/ap2b/Gw/1WOWMWvSjBxKIBcgWa
 github.com/go-pogo/buildinfo v0.6.0/go.mod h1:/S1kwu5ND4usz0Mxus0poGwN+xY/l/ETVVDDGzQAmUQ=
 github.com/go-pogo/easytls v0.0.0-20240519223850-49377406d2be h1:wV/EmHciZrbxYI+jZvdWLf5W/MMAVxD8BCG+tFFySK4=
 github.com/go-pogo/easytls v0.0.0-20240519223850-49377406d2be/go.mod h1:4BtM/NpIjBlCO8pxlKD83o9liAuZlarnVd3aaePZJ8o=
-github.com/go-pogo/env v0.4.3 h1:fGidf88STkbvnjGAE6gjQcDGbeBVIZ+pFT01cA/+6OA=
-github.com/go-pogo/env v0.4.3/go.mod h1:aOy+mleXtJMrsXv3F7xmEUAizwezVPtWWKO+oOAZy2I=
+github.com/go-pogo/env v0.4.4 h1:W2oy8RAfYGV7yjn1FG7+cSjzF+92Ad2/3SySkWhWPpY=
+github.com/go-pogo/env v0.4.4/go.mod h1:aOy+mleXtJMrsXv3F7xmEUAizwezVPtWWKO+oOAZy2I=
 github.com/go-pogo/errors v0.10.0 h1:hMgJ/s90sJH6XPH9tE0jvhGu9aSHnO2r8w4idOj4950=
 github.com/go-pogo/errors v0.10.0/go.mod h1:siGu70A3ZN66hrvkQuK+t3O5eB7kquLnaw52L2IBtYg=
 github.com/go-pogo/healthcheck v0.0.0-20240521200503-6d24b23674e2 h1:LU/idm8+VWt79Ys/3Bzu27ormYY82ba1kqZsTafT02k=
