@@ -5,16 +5,16 @@ go 1.22.0
 require (
 	github.com/go-logr/zerologr v1.2.3
 	github.com/go-pogo/buildinfo v0.6.0
-	github.com/go-pogo/easytls v0.0.0-20240519223850-49377406d2be
-	github.com/go-pogo/env v0.4.3
+	github.com/go-pogo/easytls v0.1.0
+	github.com/go-pogo/env v0.4.4
 	github.com/go-pogo/errors v0.10.0
-	github.com/go-pogo/healthcheck v0.0.0-20240521200503-6d24b23674e2
-	github.com/go-pogo/serv v0.3.2
-	github.com/go-pogo/telemetry v0.0.0-20240522202800-dc04eba573f1
+	github.com/go-pogo/healthcheck v0.0.0-20240524185138-e131345ffcdc
+	github.com/go-pogo/serv v0.3.3
+	github.com/go-pogo/telemetry v0.0.0-20240524190626-60425635f0b7
 	github.com/goccy/go-json v0.10.3
 	github.com/prometheus/client_golang v1.19.1
-	github.com/roeldev/youless-client v0.0.0-20240512093625-d1e0185bf01c
-	github.com/rs/zerolog v1.32.0
+	github.com/roeldev/youless-client v0.0.0-20240524184820-8b01ee863668
+	github.com/rs/zerolog v1.33.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.52.0
 	go.opentelemetry.io/otel v1.27.0
 	go.opentelemetry.io/otel/trace v1.27.0
