@@ -61,9 +61,6 @@ func (o *otelHealthChecker) CheckHealth(_ context.Context) healthcheck.Status {
 	o.mut.RLock()
 	defer o.mut.RUnlock()
 
-	if o.lastErr.IsZero() {
-		return healthcheck.StatusUnknown
-	}
 	if time.Since(o.lastErr) <= o.timeout {
 		return healthcheck.StatusUnhealthy
 	}
