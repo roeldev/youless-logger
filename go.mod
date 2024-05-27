@@ -8,7 +8,7 @@ require (
 	github.com/go-pogo/easytls v0.1.0
 	github.com/go-pogo/env v0.4.4
 	github.com/go-pogo/errors v0.10.0
-	github.com/go-pogo/healthcheck v0.0.0-20240524185138-e131345ffcdc
+	github.com/go-pogo/healthcheck v0.1.0
 	github.com/go-pogo/serv v0.3.3
 	github.com/go-pogo/telemetry v0.0.0-20240524190626-60425635f0b7
 	github.com/goccy/go-json v0.10.3
