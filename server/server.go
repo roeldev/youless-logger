@@ -20,6 +20,7 @@ import (
 	"github.com/rs/zerolog"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"net/http"
+	"time"
 )
 
 const (
@@ -56,14 +57,13 @@ func New(name string, conf Config, zl zerolog.Logger, opts ...Option) (*Server, 
 	srv := &Server{
 		name:   name,
 		log:    zl,
+		health: healthcheck.Checker{Timeout: 3 * time.Second},
 		router: newRouter(&zl),
 	}
 	log := &logger{&srv.log}
 
 	// setup health checker
-	err := srv.health.With(
-		healthcheck.WithLogger(log),
-	)
+	err := srv.health.With(healthcheck.WithLogger(log))
 	if err != nil {
 		return nil, err
 	}
