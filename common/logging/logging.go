@@ -54,7 +54,7 @@ func (l *Logger) LogBuildInfo(bld *buildinfo.BuildInfo, modules ...string) {
 
 	for _, name := range modules {
 		if mod := bld.Module(name); mod.Version != "" {
-			event.Str(path.Base(mod.Path)+"_version", mod.Version)
+			event.Str("module_"+path.Base(mod.Path), mod.Version)
 		}
 	}
 
