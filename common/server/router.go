@@ -5,20 +5,30 @@
 package server
 
 import (
+	"github.com/go-pogo/buildinfo"
 	"github.com/go-pogo/serv"
-	"github.com/rs/zerolog"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 	"net/http"
 )
+
+const (
+	BuildInfoRoute   = buildinfo.MetricName
+	HealthCheckRoute = "healthcheck"
+	FaviconRoute     = "favicon"
+)
+
+type RegisterRouteLogger interface {
+	LogRegisterRoute(route serv.Route)
+}
 
 var _ serv.Router = (*router)(nil)
 
 type router struct {
 	*serv.ServeMux
-	log *zerolog.Logger
+	log RegisterRouteLogger
 }
 
-func newRouter(log *zerolog.Logger) *router {
+func newRouter(log RegisterRouteLogger) *router {
 	return &router{
 		ServeMux: serv.NewServeMux(),
 		log:      log,
@@ -41,11 +51,7 @@ func (r *router) HandleFunc(pattern string, handler func(http.ResponseWriter, *h
 
 func (r *router) HandleRoute(route serv.Route) {
 	if r.log != nil {
-		r.log.Debug().
-			Str("name", route.Name).
-			Str("method", route.Method).
-			Str("pattern", route.Pattern).
-			Msg("register route")
+		r.log.LogRegisterRoute(route)
 	}
 
 	route.Handler = otelhttp.WithRouteTag(route.Pattern, route.Handler)
