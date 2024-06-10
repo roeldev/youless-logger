@@ -96,7 +96,7 @@ func New(name string, conf Config, log Logger, telem *telemetry.Telemetry, opts 
 
 func (srv *Server) Name() string { return srv.server.Name() }
 
-func (srv *Server) Router() serv.Router { return srv.router }
+func (srv *Server) RouteHandler() serv.RouteHandler { return srv.router }
 
 func (srv *Server) Run(ctx context.Context) error {
 	srv.server.BaseContext = serv.BaseContext(ctx)
