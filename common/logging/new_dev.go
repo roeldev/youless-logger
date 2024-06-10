@@ -13,7 +13,8 @@ import (
 
 func init() {
 	zerolog.ErrorMarshalFunc = func(err error) interface{} {
-		return fmt.Sprintf("%+v", err)
+		_, _ = fmt.Fprintf(os.Stdout, "\n%+v\n", err)
+		return fmt.Sprintf("%v", err)
 	}
 }
 
