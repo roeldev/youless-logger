@@ -127,18 +127,17 @@ func (l *Logger) LogAccess(_ context.Context, det accesslog.Details, req *http.R
 		Msg(accesslog.Message)
 }
 
-// HealthChanged is part of the [healthcheck.Logger] interface.
-func (l *Logger) HealthChanged(status, oldStatus healthcheck.Status) {
+// LogHealthChanged is part of the [healthcheck.Logger] interface.
+func (l *Logger) LogHealthChanged(status, oldStatus healthcheck.Status, statuses map[string]healthcheck.Status) {
 	l.Logger.Info().
 		Stringer("status", status).
 		Stringer("old_status", oldStatus).
-		Msg("health status changed")
-}
+		Msg("health changed")
 
-// HealthChecked is part of the [healthcheck.Logger] interface.
-func (l *Logger) HealthChecked(name string, stat healthcheck.Status) {
-	l.Logger.Debug().
-		Str("name", name).
-		Stringer("status", stat).
-		Msg("health status checked")
+	for name, stat := range statuses {
+		l.Logger.Debug().
+			Str("name", name).
+			Stringer("status", stat).
+			Msg("health")
+	}
 }
