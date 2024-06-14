@@ -5,6 +5,12 @@
 package logging
 
 import (
+	"io"
+	"net/http"
+	"os"
+	"path"
+	"time"
+
 	"github.com/go-pogo/buildinfo"
 	"github.com/go-pogo/healthcheck"
 	"github.com/go-pogo/serv"
@@ -12,11 +18,6 @@ import (
 	"github.com/roeldev/youless-logger/common/server"
 	"github.com/rs/zerolog"
 	"golang.org/x/net/context"
-	"io"
-	"net/http"
-	"os"
-	"path"
-	"time"
 )
 
 var (

@@ -5,10 +5,11 @@
 package server
 
 import (
+	"net/http"
+
 	"github.com/go-pogo/buildinfo"
 	"github.com/go-pogo/serv"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
-	"net/http"
 )
 
 const (

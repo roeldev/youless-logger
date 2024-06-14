@@ -8,13 +8,14 @@ package server
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/go-pogo/easytls"
 	"github.com/go-pogo/errors"
 	"github.com/go-pogo/serv"
 	"github.com/go-pogo/serv/accesslog"
 	"github.com/go-pogo/telemetry"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
-	"net/http"
 )
 
 type Logger interface {

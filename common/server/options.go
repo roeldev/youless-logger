@@ -6,10 +6,11 @@ package server
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/go-pogo/buildinfo"
 	"github.com/go-pogo/healthcheck"
 	"github.com/go-pogo/serv"
-	"net/http"
 )
 
 type Option func(app *Server, conf Config) error

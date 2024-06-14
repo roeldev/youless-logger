@@ -8,6 +8,8 @@ package logging
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/rs/zerolog"
 )
 
