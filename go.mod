@@ -8,10 +8,10 @@ require (
 	github.com/go-pogo/env v0.4.5
 	github.com/go-pogo/errors v0.11.0
 	github.com/go-pogo/healthcheck v0.1.1
-	github.com/go-pogo/serv v0.4.0
+	github.com/go-pogo/serv v0.5.0
 	github.com/go-pogo/telemetry v0.1.3
 	github.com/goccy/go-json v0.10.3
-	github.com/roeldev/youless-client v0.0.0-20240614190306-572670d09f06
+	github.com/roeldev/youless-client v0.1.0
 	github.com/rs/zerolog v1.33.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.52.0
 	go.opentelemetry.io/otel v1.27.0
@@ -49,8 +49,8 @@ require (
 	golang.org/x/sys v0.21.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/xerrors v0.0.0-20231012003039-104605ab7028 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240610135401-a8a62080eff3 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240610135401-a8a62080eff3 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240617180043-68d350f18fd4 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240617180043-68d350f18fd4 // indirect
 	google.golang.org/grpc v1.64.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 )
