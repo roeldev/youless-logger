@@ -15,6 +15,7 @@ import (
 	"github.com/go-pogo/healthcheck"
 	"github.com/go-pogo/serv"
 	"github.com/go-pogo/serv/accesslog"
+	youlessclient "github.com/roeldev/youless-client"
 	"github.com/roeldev/youless-logger/common/server"
 	"github.com/rs/zerolog"
 	"golang.org/x/net/context"
@@ -22,8 +23,9 @@ import (
 
 var (
 	//_ serv.ErrorLogger   = (*Logger)(nil)
-	_ server.Logger      = (*Logger)(nil)
-	_ healthcheck.Logger = (*Logger)(nil)
+	_ server.Logger        = (*Logger)(nil)
+	_ healthcheck.Logger   = (*Logger)(nil)
+	_ youlessclient.Logger = (*Logger)(nil)
 )
 
 type Logger struct{ zerolog.Logger }
@@ -141,4 +143,21 @@ func (l *Logger) LogHealthChanged(status, oldStatus healthcheck.Status, statuses
 			Stringer("status", stat).
 			Msg("health")
 	}
+}
+
+// LogClientRequest is part of the [youlessclient.Logger] interface.
+func (l *Logger) LogClientRequest(_ context.Context, name, url string, shared bool) {
+	l.Logger.Debug().
+		Str("client", name).
+		Str("url", url).
+		Bool("shared", shared).
+		Msg("client request")
+}
+
+// LogFetchAuthCookie is part of the [youlessclient.Logger] interface.
+func (l *Logger) LogFetchAuthCookie(name string, cookie http.Cookie) {
+	l.Logger.Info().
+		Str("client", name).
+		Str("cookie", cookie.String()).
+		Msg("fetched auth cookie")
 }
