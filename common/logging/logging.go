@@ -5,6 +5,7 @@
 package logging
 
 import (
+	"context"
 	"io"
 	"net/http"
 	"os"
@@ -18,7 +19,6 @@ import (
 	youlessclient "github.com/roeldev/youless-client"
 	"github.com/roeldev/youless-logger/common/server"
 	"github.com/rs/zerolog"
-	"golang.org/x/net/context"
 )
 
 var (

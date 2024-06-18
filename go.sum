@@ -28,8 +28,8 @@ github.com/go-pogo/rawconv v0.6.0 h1:pZKl10gPgiDinclSEG4Lfe+CYkeDK39XGHMpUZDsfCk
 github.com/go-pogo/rawconv v0.6.0/go.mod h1:fur2WrV1naaFEg3gCjVe8CRMj+0o3rYY7VYEZb/pESc=
 github.com/go-pogo/serv v0.5.0 h1:NzU1r8LsqhYUN6YZX75UiRH6EAM5nBTg6aQ/c38Y1uA=
 github.com/go-pogo/serv v0.5.0/go.mod h1:KOfNfIwK86KJdf7zL5zNRrlFd01+1RoHiq+0Qsy2AUg=
-github.com/go-pogo/telemetry v0.1.3 h1:3TcSCZeAqQypR019yMU2fG8Vdzz8pqJCZp4hdNEiLL0=
-github.com/go-pogo/telemetry v0.1.3/go.mod h1:3ArE+SkkcKvi27F5TaPUks0lr+S9wsur1QKoxrTJm30=
+github.com/go-pogo/telemetry v0.1.4 h1:MPUlp4Bb5cTuG6k+Fsp8vuRNEZyK8tett41PVKu8F18=
+github.com/go-pogo/telemetry v0.1.4/go.mod h1:/pwBK0eTOWTknjd3kU5R2guOtbnEkrOVa57aUQ5YyEM=
 github.com/go-pogo/writing v0.2.0 h1:MzDFJdvVuBdt5oCfzASUJ0NQbmuKH/7h7cE4bkVVuaI=
 github.com/go-pogo/writing v0.2.0/go.mod h1:TSPLREl8jvEQmEz2uyLxkrunfJCEbAGTxYKAs5mM8mU=
 github.com/goccy/go-json v0.10.3 h1:KZ5WoDbxAIgm2HNbYckL0se1fHD6rz5j4ywS6ebzDqA=
