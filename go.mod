@@ -3,15 +3,15 @@ module github.com/roeldev/youless-logger
 go 1.22.0
 
 require (
-	github.com/go-pogo/buildinfo v0.7.1
-	github.com/go-pogo/easytls v0.1.1
-	github.com/go-pogo/env v0.4.5
-	github.com/go-pogo/errors v0.11.0
-	github.com/go-pogo/healthcheck v0.1.1
-	github.com/go-pogo/serv v0.5.0
-	github.com/go-pogo/telemetry v0.1.4
+	github.com/go-pogo/buildinfo v0.7.2
+	github.com/go-pogo/easytls v0.1.2
+	github.com/go-pogo/env v0.4.6
+	github.com/go-pogo/errors v0.11.1
+	github.com/go-pogo/healthcheck v0.1.2
+	github.com/go-pogo/serv v0.5.1
+	github.com/go-pogo/telemetry v0.1.5
 	github.com/goccy/go-json v0.10.3
-	github.com/roeldev/youless-client v0.1.0
+	github.com/roeldev/youless-client v0.1.1
 	github.com/rs/zerolog v1.33.0
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.52.0
 	go.opentelemetry.io/otel v1.27.0
@@ -25,7 +25,7 @@ require (
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
-	github.com/go-pogo/rawconv v0.6.0 // indirect
+	github.com/go-pogo/rawconv v0.6.1 // indirect
 	github.com/go-pogo/writing v0.2.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
