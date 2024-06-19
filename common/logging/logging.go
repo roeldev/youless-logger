@@ -6,6 +6,7 @@ package logging
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -13,6 +14,7 @@ import (
 	"time"
 
 	"github.com/go-pogo/buildinfo"
+	"github.com/go-pogo/errors"
 	"github.com/go-pogo/healthcheck"
 	"github.com/go-pogo/serv"
 	"github.com/go-pogo/serv/accesslog"
@@ -20,6 +22,17 @@ import (
 	"github.com/roeldev/youless-logger/common/server"
 	"github.com/rs/zerolog"
 )
+
+func init() {
+	zerolog.ErrorMarshalFunc = func(err error) interface{} {
+		if errors.GetStackTrace(err) != nil {
+			// print complete stack trace for easier debugging during development
+			_, _ = fmt.Fprintf(os.Stdout, "\n%+v\n", err)
+		}
+
+		return fmt.Sprintf("%v", err)
+	}
+}
 
 var (
 	//_ serv.ErrorLogger   = (*Logger)(nil)

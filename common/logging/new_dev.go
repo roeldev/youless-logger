@@ -7,18 +7,8 @@
 package logging
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/rs/zerolog"
 )
-
-func init() {
-	zerolog.ErrorMarshalFunc = func(err error) interface{} {
-		_, _ = fmt.Fprintf(os.Stdout, "\n%+v\n", err)
-		return fmt.Sprintf("%v", err)
-	}
-}
 
 func New(level zerolog.Level, withTimestamp bool) *Logger {
 	return NewDevelopmentLogger(level, withTimestamp)
